@@ -1,0 +1,103 @@
+{
+    "nit": "06142803901121",
+    "activo": true,
+    "passwordPri": "Rr2Ll3rm0@$ñ@",
+    "dteJson": {
+        "identificacion": {
+            "version": 3,
+            "ambiente": "00",
+            "tipoDte": "04",
+            "numeroControl": "DTE-04-0001ONEC-000000000000320",
+            "codigoGeneracion": "95D41AE3-CC75-442B-9F9D-AD838091A120",
+            "tipoModelo": 1,
+            "tipoOperacion": 1,
+            "tipoContingencia": null,
+            "motivoContin": null,
+            "fecEmi": "2024-02-15",
+            "horEmi": "20:30:00",
+            "tipoMoneda": "USD"
+        },
+        "documentoRelacionado": null,
+        "emisor": {
+            "nit": "06142803901121",
+            "nrc": "2398810",
+            "nombre": "JUAN MANUEL REYES",
+            "codActividad": "73100",
+            "descActividad": "publicidad",
+            "nombreComercial": null,
+            "tipoEstablecimiento": "01",
+            "direccion": {
+                "departamento": "06",
+                "municipio": "14",
+                "complemento": "San Salvador"
+            },
+            "telefono": "2281-8000",
+            "correo": "mentesbrillantesagencia@gmail.com",
+            "codEstableMH": "0000",
+            "codEstable": "0000",
+            "codPuntoVentaMH": "0000",
+            "codPuntoVenta": "0000"
+        },
+        "receptor": {
+            "tipoDocumento": "13",
+            "numDocumento": "02632564-8",
+            "nrc": null,
+            "nombre": "Edwin Abel, Valdivieso Moreno",
+            "codActividad": "45201",
+            "descActividad": "Reparación mecánica de vehículos automotores",
+            "nombreComercial": null,
+            "direccion": {
+                "departamento": "05",
+                "municipio": "11",
+                "complemento": "14 Av Nte, San Antonio Las Palmeras, 51."
+            },
+            "telefono": "7855-1105",
+            "correo": "gj23726116@gmail.com",
+            "bienTitulo": "04"
+        },
+        "ventaTercero": null,
+        "cuerpoDocumento": [{
+            "numItem": 1,
+            "tipoItem": 1,
+            "numeroDocumento": null,
+            "cantidad": 1,
+            "codigo": "Ejemplo",
+            "codTributo": null,
+            "uniMedida": 33,
+            "descripcion": "Llanta",
+            "precioUni": 50.4,
+            "montoDescu": 0,
+            "ventaNoSuj": 0,
+            "ventaExenta": 0,
+            "ventaGravada": 50.4,
+            "tributos": ["20"]
+        }],
+        "resumen": {
+            "totalNoSuj": 0,
+            "totalExenta": 0,
+            "totalGravada": 50.4,
+            "subTotalVentas": 50.4,
+            "descuNoSuj": 0,
+            "descuExenta": 0,
+            "descuGravada": 0,
+            "porcentajeDescuento": 0,
+            "totalDescu": 0,
+            "subTotal": 50.4,
+            "tributos": [{
+                "codigo": "20",
+                "descripcion": "Impuesto al Valor Agregado 13%",
+                "valor": 6.55
+            }],
+            "montoTotalOperacion": 56.95,
+            "totalLetras": "TREINTA Y TRES Y NOVENTA Y SIETE  00/100 DÓLARES ESTADOUNIDENSES"
+        },
+        "extension": {
+            "nombEntrega": null,
+            "docuEntrega": null,
+            "nombRecibe": null,
+            "docuRecibe": null,
+            "observaciones": null
+        },
+        "apendice": null
+    }
+}

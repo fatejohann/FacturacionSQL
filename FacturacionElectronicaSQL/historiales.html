@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facturación Electrónica</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Facturación Electrónica</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link" onclick="showToken()">H.Token</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link" onclick="showTiposdeDocumento()">H.Tipos de Documento</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link" onclick="showEmisor()">H.Emisor</button>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-link nav-link" onclick="showReceptor()">H.Receptor</button>
+                </li>
+            </ul>
+            <div class="navbar-nav">
+                <a href="inicio.html" class="nav-item nav-link btn btn-info text-white">Inicio</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sección del historial de Tokens -->
+<div id="H.TokenSection" style="display: block;">
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Fecha de creación</th>
+                        <th>Token</th>
+                    </tr>
+                </thead>
+                <tbody id="hTokenTableBody">
+                    <!-- Las filas se llenarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Sección del historial de DTE -->
+<div id="H.TiposDocumentoSection" style="display: none;">
+    <div class="container text-center mt-5">
+        <h1 class="mb-4">Historial de Documentos</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Fecha de Creación</th>
+                        <th scope="col">Fecha de Recibido</th>
+                        <th scope="col">Sello de Recibido</th>
+                        <th scope="col">Tipo de DTE</th>
+                        <th scope="col">Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody id="dteHistoryTableBody">
+                    <!-- Los datos del historial de DTE se insertarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Sección del historial de Receptor -->
+<div id="H.ReceptorSection" style="display: none;">
+    <div class="container text-center mt-5">
+        <h1 class="mb-4">Receptor</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">NIT</th>
+                        <th scope="col">NRC</th>
+                     <!--   <th scope="col">Acciones</th>   -->   
+                    </tr>
+                </thead>
+                <tbody id="hReceptorTableBody">
+                    <!-- Las filas se llenarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Sección del historial de Emisor -->
+<div id="H.EmisorSection" style="display: none;">
+    <div class="container text-center mt-5"> 
+        <h1 class="mb-4">Emisor</h1>
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Comercial</th>
+                        <th scope="col">Actividad</th>
+                        <th scope="col">NCR</th>
+                        <th scope="col">NIT</th>
+                        <th scope="col">Depto.</th>
+                        <th scope="col">Muni.</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="hEmisorTableBody">
+                    <!-- Las filas se llenarán dinámicamente aquí -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Autenticación -->
+    <button id="authorize_button" onclick="handleAuthClickHistoriales()">Authorize</button>
+    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
+
+    <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
+    <!-- Enlace a Axios para realizar solicitudes HTTP -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/historiales.js"></script>
+</body>
+
+</html>
