@@ -1,0 +1,155 @@
+{
+   
+    "nit":"06142803901121",
+    "activo":true,
+    "passwordPri": "Rr2Ll3rm0@$ñ@",   
+
+    "dteJson":{
+
+    "identificacion": {
+        "version": 1,
+        "ambiente": "00",
+        "tipoDte": "01",
+        "numeroControl": "DTE-01-0001ONEC-000000000005002", 
+        "codigoGeneracion": "B1B99C52-B821-4BF0-8B5C-C010AF6E1CCD", 
+        "tipoModelo": 1,
+        "tipoOperacion": 1,
+        "tipoContingencia": null,
+        "motivoContin": null,
+        "fecEmi": "2024-03-21",
+        "horEmi": "19:30:00",
+        "tipoMoneda": "USD"
+    },
+    "documentoRelacionado": null,
+    "emisor": {
+        "nit": "06142803901121",
+        "nrc": "2398810",
+        "nombre": "JUAN MANUEL REYES",
+        "codActividad": "73100",
+        "descActividad": "Publicidad",
+        "nombreComercial": null,
+        "tipoEstablecimiento": "01",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "14",
+            "complemento": "San Salvador"
+        },
+        "telefono": "2281-8000",
+        "codEstableMH": "0000",
+        "codEstable": "0000",
+        "codPuntoVentaMH": "0000",
+        "codPuntoVenta": "0000",
+        "correo": "mentesbrillantesagencia@gmail.com"
+    },
+    "receptor": {
+        "tipoDocumento": "36",
+        "numDocumento": "06142803901121",
+        "nrc": null,
+        "nombre": "Luis Del Cid",
+        "codActividad": null,
+        "descActividad": null,
+        "direccion": {
+            "departamento": "06",
+            "municipio": "14",
+            "complemento": "SAN SALVADOR"
+        },
+        "telefono": "78291734",
+        "correo": "gj23726116@gmail.com "
+    },
+    "otrosDocumentos": null,
+    "ventaTercero": null,
+    "cuerpoDocumento": [
+        {
+            "numItem": 1,
+            "tipoItem": 2,
+            "numeroDocumento": null,
+            "cantidad": 1,
+            "codigo": null,
+            "codTributo": null,
+            "uniMedida": 99,
+            "descripcion": "EMISIÓN DE CERTIFICADOS DE FIRMA ELECTRÓNICA 1",
+            "precioUni": 100,
+            "montoDescu": 0,
+            "ventaNoSuj": 0,
+            "ventaExenta": 0,
+            "ventaGravada": 100,
+            "tributos": null,
+            "psv": 0,
+            "noGravado": 5,
+            "ivaItem": 11.50
+        },
+        {
+            "numItem": 2,
+            "tipoItem": 2,
+            "numeroDocumento": null,
+            "cantidad": 1,
+            "codigo": null,
+            "codTributo": null,
+            "uniMedida": 99,
+            "descripcion": "EMISIÓN DE CERTIFICADOS DE FIRMA ELECTRÓNICA 2",
+            "precioUni": 25,
+            "montoDescu": 25,
+            "ventaNoSuj": 0,
+            "ventaExenta": 0,
+            "ventaGravada": 0,
+            "tributos": null,
+            "psv": 0,
+            "noGravado": 0,
+            "ivaItem": 0
+        }
+    ],
+    "resumen": {
+        "totalNoSuj": 0,
+        "totalExenta": 0,
+        "totalGravada": 100,
+        "subTotalVentas": 100,
+        "descuNoSuj": 0,
+        "descuExenta": 0,
+        "descuGravada": 0,
+        "porcentajeDescuento": 0,
+        "totalDescu": 25,
+        "tributos": null,
+        "subTotal": 100,
+        "ivaRete1": 0,
+        "reteRenta": 0,
+        "montoTotalOperacion": 100,
+        "totalNoGravado": 5,
+        "totalPagar": 105,
+        "totalLetras": "pendiente",
+        "totalIva": 11.50,
+        "saldoFavor": -500,
+        "condicionOperacion": 1,
+        "pagos": [{
+            "codigo":"01",
+            "montoPago":50,
+            "referencia":null,
+            "plazo":null,
+            "periodo":null
+        },
+        {
+            "codigo":"03",
+            "montoPago":25,
+            "referencia":null,
+            "plazo":null,
+            "periodo":null
+        },
+        {
+            "codigo":"99",
+            "montoPago":25,
+            "referencia":null,
+            "plazo":null,
+            "periodo":null
+        }],
+        "numPagoElectronico": null
+    },
+    "extension": {
+        "nombEntrega": null,
+        "docuEntrega": null,
+        "nombRecibe": null,
+        "docuRecibe": null,
+        "observaciones": null,
+        "placaVehiculo": null
+    },
+ "apendice": null
+}
+}

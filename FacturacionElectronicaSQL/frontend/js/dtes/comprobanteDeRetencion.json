@@ -1,0 +1,90 @@
+{
+    "nit":"06142803901121",
+    "activo":true,
+    "passwordPri": "Rr2Ll3rm0@$ñ@",
+
+    "dteJson":{
+
+    "identificacion" : {
+        "version" :1,
+        "ambiente" :"00",
+        "tipoDte" : "07",
+        "numeroControl" :"DTE-07-0001ONEC-000000000005012",
+        "codigoGeneracion" :"D865E2FA-60ED-4AB3-A58F-D482689A4FFE",
+        "tipoModelo" :1,
+        "tipoOperacion" :1,
+        "tipoContingencia" :null,
+        "motivoContin" : null,
+        "fecEmi" : "2024-01-17",
+        "horEmi" : "15:00:00",
+        "tipoMoneda" : "USD"
+    },
+
+"emisor" : {
+    "nit" : "06142803901121",
+    "nrc" : "2398810",
+    "nombre" : "JUAN MANUEL REYES",
+    "codActividad" : "73100",
+    "descActividad" : "publicidad",
+    "nombreComercial" : null,
+    "tipoEstablecimiento" : "01",
+    "direccion" : {
+            "departamento" : "06",
+            "municipio" : "14",
+            "complemento" : "San Salvador"
+    },
+    "telefono" : "2281-8000",
+    "correo" : "mentesbrillantesagencia@gmail.com",
+    "codigoMH" : "0000",
+    "codigo" : "0000",
+    "puntoVentaMH" : "0000",
+    "puntoVenta" : "0000"  
+},
+
+"receptor" : {
+    "tipoDocumento": "36",
+    "numDocumento" : "06142803901121",
+    "nrc" : "2398810",
+    "nombre" : "Gerardo juárez",
+    "codActividad" : "73100",
+    "descActividad" : "publicidad",
+    "nombreComercial" : null,
+    "direccion" : {
+            "departamento" : "06",
+            "municipio" : "14",
+            "complemento" : "San Salvador"
+        },
+    "telefono" :null,
+    "correo" : "gj23726116@gmail.com"
+    },
+
+    "cuerpoDocumento" : [
+    {
+        "numItem": 1,
+        "tipoDte": "01",
+        "tipoDoc": 2,
+        "numDocumento": "9F8E1E85-BCCE-4BCC-9377-CB469A28111C",
+        "fechaEmision": "2024-01-17",
+        "montoSujetoGrav":1092.04,
+        "codigoRetencionMH":"22",
+        "ivaRetenido":10.92,
+        "descripcion":"descripcion"
+    }
+    ],
+
+    "resumen" : {
+            "totalSujetoRetencion":1092.04,
+            "totalIVAretenido":10.92,
+            "totalIVAretenidoLetras":"pendiente"
+    },
+    "extension" : {
+        "nombEntrega" : null,
+        "docuEntrega" : null,
+        "nombRecibe" : null,
+        "docuRecibe" : null,
+        "observaciones" : null
+    },
+        
+        "apendice": null
+    }
+}

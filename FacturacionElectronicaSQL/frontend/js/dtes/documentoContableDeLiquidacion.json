@@ -1,0 +1,90 @@
+{
+    "nit":"06142803901121",
+    "activo":true,
+    "passwordPri": "Rr2Ll3rm0@$ñ@",
+
+    "dteJson":
+    {
+        "identificacion": 
+        {
+        "version": 1,
+        "ambiente": "00",
+        "tipoDte": "09",
+        "numeroControl": "DTE-09-0001ONEC-000000000005013",
+        "codigoGeneracion": "ED2D2615-B6CA-4F93-8CAA-62110ACFE06F",
+        "tipoModelo": 1,
+        "tipoOperacion": 1,
+        "fecEmi": "2024-01-18",
+        "horEmi": "09:00:00",
+        "tipoMoneda": "USD"
+        },
+    "emisor": 
+        {
+        "nit": "06142803901121",
+        "nrc": "2398810",
+        "nombre": "JUAN MANUEL REYES",
+        "codActividad": "73100",
+        "descActividad": "Publicidad",
+        "nombreComercial": null,
+        "tipoEstablecimiento": "01",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "14",
+            "complemento": "San Salvador"
+        },
+        "telefono": "22818000",
+        "codigoMH": null,
+        "codigo": null,
+        "puntoVentaMH": null,
+        "puntoVentaContri": null,
+        "correo": "mentesbrillantesagencia@gmail.com"
+        },
+    "receptor": 
+    {
+        "nit": "043474311",
+        "nrc": "2398810",
+        "nombre": "FUNDACIÓN EMPRENDE HOY", 
+        "codActividad": "01271",
+        "descActividad": "Esta es la descripción de la actividad",
+        "tipoEstablecimiento": "01",
+        "nombreComercial": null,
+        "direccion": {
+            "departamento": "06",
+            "municipio": "14",
+            "complemento": "SAN SALVADOR"
+        },
+        "codigoMH": null,
+        "puntoVentaMH": null,
+        "telefono": "78291734",
+        "correo": "gj23726116@gmail.com "
+    },
+    "cuerpoDocumento": 
+    { 
+            "periodoLiquidacionFechaInicio": "2024-01-13",
+            "periodoLiquidacionFechaFin": "2024-01-13",
+            "codLiquidacion": null,
+            "cantidadDoc": null,
+            "valorOperaciones": 1.00,
+            "montoSinPercepcion": 0.87,
+            "descripSinPercepcion": null,
+            "subTotal": 0.13,
+            "iva": 0.02,
+            "montoSujetoPercepcion": 0.13,
+            "ivaPercibido": 0.02,
+            "comision": 0,
+            "porcentComision": 0,
+            "ivaComision": 0,
+            "liquidoApagar": 1.00,
+            "totalLetras": "UNO DÓLARES AMERICANOS",
+            "observaciones": null
+    },
+    
+    "extension": 
+    {
+        "nombEntrega": "JUAN MANUEL REYES",
+        "docuEntrega": "06142803901121",
+        "codEmpleado": null
+    },
+    "apendice": null
+}
+}

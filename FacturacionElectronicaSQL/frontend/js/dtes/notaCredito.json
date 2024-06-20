@@ -1,0 +1,108 @@
+{
+    "nit":"06142803901121",
+    "activo":true,
+    "passwordPri": "Rr2Ll3rm0@$ñ@",
+
+    "dteJson":{
+
+    "identificacion" : {
+        "version" :3,
+        "ambiente" :"00",
+        "tipoDte" : "05",
+        "numeroControl" :"DTE-05-0001ONEC-000000000005003",
+        "codigoGeneracion" :"3A340F2F-5F8E-4801-89A8-B1FB49E768C5",
+        "tipoModelo" :1,
+        "tipoOperacion" :1,
+        "tipoContingencia" :null,
+        "motivoContin" : null,
+        "fecEmi" : "2024-03-21",
+        "horEmi" : "21:00:00",
+        "tipoMoneda" : "USD"
+    },
+
+    "documentoRelacionado": [
+            {
+                
+                "tipoDocumento": "03", 
+                "tipoGeneracion": 1,
+                "numeroDocumento": "D7A32E8C-06C0-41A2-9E2F-A094C994AFDE", 
+                "fechaEmision": "2024-02-21" 
+            }
+    ],
+
+"emisor" : {
+    "nit" : "06142803901121",
+    "nrc" : "2398810",
+    "nombre" : "JUAN MANUEL REYES",
+    "codActividad" : "73100",
+    "descActividad" : "publicidad",
+    "nombreComercial" : null,
+    "tipoEstablecimiento" : "01",
+    "direccion" : {
+            "departamento" : "06",
+            "municipio" : "14",
+            "complemento" : "San Salvador"
+    },
+    "telefono" : "2281-8000",
+    "correo" : "mentesbrillantesagencia@gmail.com"
+},
+
+"receptor" : {
+    "nit" : "06142803901121",
+    "nrc" : "2398810",
+    "nombre" : "Luis Del Cid",
+    "codActividad" : "73100",
+    "descActividad" : "publicidad",
+    "nombreComercial" : null,
+    "direccion" : {
+            "departamento" : "06",
+            "municipio" : "14",
+            "complemento" : "San Salvador"
+        },
+    "telefono" :null,
+    "correo" : "gj23726116@gmail.com"
+    },
+
+    "ventaTercero" : null,
+
+    "cuerpoDocumento" : [
+    {
+                "numItem": 1,
+                "tipoItem": 2,
+                "numeroDocumento": "D7A32E8C-06C0-41A2-9E2F-A094C994AFDE", 
+                "cantidad": 1,
+                "codigo": null,
+                "codTributo": null,
+                "uniMedida": 99,
+                "descripcion": "Descripcion",
+                "precioUni": 25.75,
+                "montoDescu": 0,
+                "ventaNoSuj": 0,
+                "ventaExenta": 0,
+                "ventaGravada": 25.75,
+                "tributos": null
+            }
+        ],
+
+    "resumen" : {
+        "totalNoSuj" : 0.00,
+        "totalExenta" : 0.00,
+        "totalGravada" : 25.75,
+        "subTotalVentas" :25.75,
+        "descuNoSuj" : 0.00,
+        "descuExenta" : 0.00,
+        "descuGravada" : 0.00,
+        "totalDescu" : 0.00,
+        "tributos": null,
+        "subTotal" : 25.75,
+        "ivaPerci1" :0.00,
+        "ivaRete1" : 0.00,
+        "reteRenta" : 0.00,
+        "montoTotalOperacion" :25.75,
+        "totalLetras" : "CUARENTA Y OCHO DOLARES CON CUARENTA Y CUATRO CENTAVOS",
+        "condicionOperacion" : 1
+    },
+    "extension": null,
+    "apendice": null
+    }
+}
