@@ -27,45 +27,27 @@
                     <button class="btn btn-link nav-link" onclick="showToken()">Token</button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link" onclick="showTiposdeDocumento()">Tipos de Documento</button>
-                </li>
-                <li class="nav-item">
                     <button class="btn btn-link nav-link" onclick="showEmisor()">Emisor</button>
                 </li>
                 <li class="nav-item">
                     <button class="btn btn-link nav-link" onclick="showReceptor()">Receptor</button>
                 </li>
-                <li class="nav-item">
-                    <button class="btn btn-link nav-link" onclick="showDetalles()">Detalles</button>
-                </li>
+                
 
-                <li class="nav-item">
-                    <button class="btn btn-link nav-link" onclick="showEventosdeContingencia()">Eventos de Contingencia</button>
-                </li>
-                <li class="nav-item">
-                    <button class="btn btn-link nav-link" onclick="showEventosdeValidacion()">Eventos de Validacion</button>
-                </li>
+                
             </ul>
             <!-- "Historiales" en el lado derecho -->
             <div class="navbar-nav">
                 <a href="historiales.html" class="nav-item nav-link btn btn-info text-white">Historiales</a>
             </div>
+            <div class="navbar-nav">
+                <a href="inicio.html" class="nav-item nav-link btn btn-info text-white">Inicio</a>
+            </div>
         </div>
     </nav>
 
     <div class="container mt-5"> <!-- Aumenta el margen superior para mayor separación -->
-        <div class="row">
-            <div class="col">
-                <button class="btn btn-primary" onclick="navigate('backward')">
-                    <i class="bi bi-arrow-left"></i> <!-- Icono de flecha hacia la izquierda -->
-                </button>
-            </div>
-            <div class="col">
-                <button class="btn btn-primary" onclick="navigate('forward')">
-                    <i class="bi bi-arrow-right"></i> <!-- Icono de flecha hacia la derecha -->
-                </button>
-            </div>
-        </div>
+        
     </div>
 
     <div class="section" id="emisorSection" style="display: block;">
@@ -75,124 +57,61 @@
                     <h5 class="card-title">Datos del Emisor</h5>
                 </div>
                 <div class="card-body">
+                    <!-- Formulario de Registro de Emisor -->
                     <form id="emisorForm">
-
                         <div class="form-group row">
-                            <label for="emisorSelect" class="col-sm-3 col-form-label">Seleccionar Emisor</label>
+                            <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="emisorSelect" onchange="autocompletarEmisor()">
-                                    <option value="" disabled selected>Seleccionar un emisor</option>
-                                </select>
+                                <input type="text" class="form-control" id="nombreComercial" required>
                             </div>
                         </div>
-
                         <div class="form-group row">
                             <label for="nit" class="col-sm-3 col-form-label">NIT</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nit" placeholder="NIT">
+                                <input type="text" class="form-control" id="nit" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nrc" placeholder="NRC">
+                                <input type="text" class="form-control" id="nrc" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="nombre" class="col-sm-3 col-form-label">Nombre</label>
+                            <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nombre" placeholder="Nombre">
+                                <input type="text" class="form-control" id="telefono" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="codActividad" class="col-sm-3 col-form-label">Código de Actividad</label>
+                            <label for="correo" class="col-sm-3 col-form-label">Correo Electrónico</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="codActividad" placeholder="Código de Actividad">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="descActividad" class="col-sm-3 col-form-label">Descripción de Actividad</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="descActividad" placeholder="Descripción de Actividad">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nombreComercial" placeholder="Nombre Comercial">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="tipoEstablecimiento" class="col-sm-3 col-form-label">Tipo de Establecimiento</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="tipoEstablecimiento" placeholder="Tipo de Establecimiento">
+                                <input type="email" class="form-control" id="correo" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="departamento" class="col-sm-3 col-form-label">Departamento</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="departamento">
-                                    <option value="" disabled selected>Seleccionar uno</option>
-                                    <option value="06">Departamento 6</option>
+                                <select class="form-control" id="departamento" required>
+                                    <!-- Opciones de departamento se llenarán dinámicamente -->
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="municipio" class="col-sm-3 col-form-label">Municipio</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="municipio">
-                                    <option value="" disabled selected>Seleccionar uno</option>
-                                    <option value="14">Municipio 14</option>
+                                <select class="form-control" id="municipio" required>
+                                    <!-- Opciones de municipio se llenarán dinámicamente -->
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="complemento" class="col-sm-3 col-form-label">Complemento</label>
+                            <label for="complemento" class="col-sm-3 col-form-label">Complemento de Dirección</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="complemento" placeholder="Dirección">
+                                <input type="text" class="form-control" id="complemento" required>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telefono" placeholder="Teléfono">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="correo" class="col-sm-3 col-form-label">Correo</label>
-                            <div class="col-sm-9">
-                                <input type="email" class="form-control" id="correo" placeholder="Correo">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="codEstableMH" class="col-sm-3 col-form-label">Código Establecimiento MH</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="codEstableMH" placeholder="Código Establecimiento MH">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="codEstable" class="col-sm-3 col-form-label">Código Establecimiento</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="codEstable" placeholder="Código Establecimiento">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="codPuntoVentaMH" class="col-sm-3 col-form-label">Código Punto de Venta MH</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="codPuntoVentaMH" placeholder="Código Punto de Venta MH">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="codPuntoVenta" class="col-sm-3 col-form-label">Código Punto de Venta</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="codPuntoVenta" placeholder="Código Punto de Venta">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-9 offset-sm-3">
-                                <button type="submit" class="btn btn-primary">Enviar</button>
-                            </div>
-                        </div>
+                        <button type="submit" class="btn btn-primary">Registrar Emisor</button>
                     </form>
                 </div>
             </div>
@@ -201,7 +120,7 @@
     
 
 
-    <div class="section" id="receptorSection" style="display: block;">
+    <div class="section" id="receptorSection" style="display: none;">
         <div class="container">
             <div class="card">
                 <div class="card-header">
@@ -292,18 +211,6 @@
         </div>
     </div>
 
-       
-        //agregar un boton que me permita realizar las dos acciones de la creacion del dte y el envio del dte
-        // y luego en los historiales de tipo de dte trabajar el boton de obtener pdf
-        <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-        <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
-    
-        <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
-        <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-        <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-        <script src="js/api.js"></script>
-        <script src="js/sheets.js"></script>
-        <script src="js/factura.js"></script>
+        <script src="js/registros.js"></script>
 </body>
 </html>

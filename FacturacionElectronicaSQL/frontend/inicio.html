@@ -57,8 +57,6 @@
             </div>
         </div>
     </nav>
-    <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
-    <button id="signout_button" onclick="handleSignoutClick()">Sign Out</button>
 
     <div class="container mt-5"> <!-- Aumenta el margen superior para mayor separación -->
         <div class="row">
@@ -117,8 +115,10 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Fecha</th>
+                                    <th>Fecha de Generación</th>
+                                    <th>Estado</th>
                                     <th>Token</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody id="lastTokenTableBody">
@@ -432,13 +432,7 @@
             </div>
         </div>
     </div>
-
-    <script async defer src="https://apis.google.com/js/api.js" id="gapi"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" id="gis"></script>
-
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <script src="js/api.js"></script>
+    
     <script src="js/sheets.js"></script>
     <script src="js/factura.js"></script>
 </body>
