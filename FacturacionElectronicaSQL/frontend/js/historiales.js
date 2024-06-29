@@ -1,37 +1,75 @@
 let lastToken;
 
-//historial de token
-async function getToken() {
-  let response;
-  try {
-      response = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1J__Pzj8RNIrwlojeF-mjBdWYtt9GH3QH3Je5SamLfSI',
-          range: 'h.token!A:D', // Asegúrate de que este rango cubra todas las columnas necesarias.
-      });
-  } catch (err) {
-      console.error('The API returned an error: ' + err);
-      return;
-  }
+document.addEventListener('DOMContentLoaded', function() {
+    getTokens();
+});
 
-  const rows = response.result.values;
-  if (rows.length > 0) {
-      const tableBody = document.getElementById('hTokenTableBody');
-      tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos.
-      // Saltarse la primera fila si contiene los encabezados de las columnas.
-      rows.slice(1).forEach((row) => {
-          // Crea una fila de tabla por cada registro.
-          let tr = `<tr>
-                      <td>${row[0]}</td>
-                      <td>${row[1]}</td>
-                      
-                    </tr>`;
-          tableBody.innerHTML += tr;
-      });
-      document.getElementById("H.TokenSection").style.display = "block"; // Mostrar la sección.
-  } else {
-      document.getElementById('H.TokenSection').innerHTML = '<p>No se encontraron datos.</p>';
-  }
+// Función para obtener todos los tokens desde el backend
+async function getTokens() {
+    try {
+        const response = await fetch('../api/get_token.php');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        console.log('Tokens obtenidos:', data);
+
+        // Mostrar los tokens en la tabla
+        const tableBody = document.getElementById('TokenTableBody');
+        if (tableBody) {
+            tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos
+
+            data.forEach(token => {
+                const tr = document.createElement('tr');
+
+                // Fecha de Generación (dividida en fecha y hora)
+                const tokenDate = new Date(token.fechaGeneracion);
+
+                // Celda para la fecha
+                const dateCell1 = document.createElement('td');
+                dateCell1.innerText = tokenDate.toLocaleDateString(); // Mostrar solo la fecha
+                tr.appendChild(dateCell1);
+
+                // Celda para la hora
+                const dateCell2 = document.createElement('td');
+                dateCell2.innerText = tokenDate.toLocaleTimeString(); // Mostrar solo la hora
+                tr.appendChild(dateCell2);
+
+                // Estado del token
+                const statusCell = document.createElement('td');
+                const button = document.createElement('button');
+                const currentDate = new Date();
+                const hoursDifference = (currentDate - tokenDate) / (1000 * 60 * 60);
+                if (hoursDifference > 24) {
+                    button.innerText = 'Caducado';
+                    button.className = 'btn btn-danger';
+                    statusCell.classList.add('token-caducado');
+                } else {
+                    button.innerText = 'Vigente';
+                    button.className = 'btn btn-success';
+                    statusCell.classList.add('token-vigente');
+                }
+                statusCell.appendChild(button);
+                tr.appendChild(statusCell);
+
+                // Token
+                const tokenCell = document.createElement('td');
+                tokenCell.innerText = token.tokenActual;
+                tr.appendChild(tokenCell);
+
+                tableBody.appendChild(tr);
+            });
+
+            document.getElementById("TokenTableBody").style.display = "block"; // Mostrar la sección
+        } else {
+            console.error('Elemento TokenTableBody no encontrado.');
+        }
+    } catch (err) {
+        console.error('Error al obtener los tokens:', err);
+    }
 }
+
 
 
 //historial de emisor
@@ -183,7 +221,7 @@ async function obtenerPdfHacienda(lastToken, codGeneracion) {
 //inicio 
 function showToken() {
   hideAllSections();
-  document.getElementById("H.TokenSection").style.display = "block";
+  document.getElementById("TokenSection").style.display = "block";
 }
 
 function showTiposdeDocumento() {
@@ -202,7 +240,7 @@ function showReceptor() {
 }
 
 function hideAllSections() {
-  document.getElementById("H.TokenSection").style.display = "none";
+  document.getElementById("TokenSection").style.display = "none";
 
   document.getElementById("H.TiposDocumentoSection").style.display = "none";
 

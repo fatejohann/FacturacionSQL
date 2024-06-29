@@ -3,41 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Emisor</title>
+    <title>Registro de Cliente</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="section" id="emisorSection" style="display: block;">
+    <div class="section" id="clienteSection" style="display: block;">
         <div class="container">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Datos del Emisor</h5>
+                    <h5 class="card-title">Datos del Cliente</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Formulario de Registro de Emisor -->
-                    <form id="emisorForm">
+                    <!-- Formulario de Registro de Cliente -->
+                    <form id="clienteForm">
+                        <div class="form-group row">
+                            <label for="nombreCliente" class="col-sm-3 col-form-label">Nombre del Cliente</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="nombreCliente" required>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nombreComercial" required>
+                                <input type="text" class="form-control" id="nombreComercial">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="nit" class="col-sm-3 col-form-label">NIT</label>
+                            <label for="direccion" class="col-sm-3 col-form-label">Dirección</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nit" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nrc" required>
+                                <input type="text" class="form-control" id="direccion" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telefono" required>
+                                <input type="text" class="form-control" id="telefono" required pattern="\d{8,15}" title="El teléfono debe contener entre 8 y 15 dígitos">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="nitDui" class="col-sm-3 col-form-label">NIT/DUI</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="nitDui" required pattern="^\d{4}-\d{6}-\d{3}-\d{1}$" title="El NIT debe tener el formato 0000-000000-000-0">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="nrc" required pattern="^\d{1,20}$" title="El NRC debe contener hasta 20 dígitos">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="exentoIVA" class="col-sm-3 col-form-label">Exento de IVA</label>
+                            <div class="col-sm-9">
+                                <input type="checkbox" class="form-control" id="exentoIVA">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -62,13 +80,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label for="complemento" class="col-sm-3 col-form-label">Complemento de Dirección</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="complemento" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registrar Emisor</button>
+                        <button type="submit" class="btn btn-primary">Registrar Cliente</button>
                     </form>
                 </div>
             </div>
@@ -120,27 +132,38 @@
             }
         }
 
-        // Función para crear un nuevo emisor
-        async function createEmisor() {
-            const emisorData = {
+        // Función para validar y crear un nuevo cliente
+        async function createCliente(event) {
+            event.preventDefault(); // Prevenir el envío del formulario por defecto
+
+            // Validar formulario
+            const form = document.getElementById('clienteForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const clienteData = {
+                nombreCliente: document.getElementById('nombreCliente').value,
                 nombreComercial: document.getElementById('nombreComercial').value,
-                nit: document.getElementById('nit').value,
-                nrc: document.getElementById('nrc').value,
+                direccion: document.getElementById('direccion').value,
                 telefono: document.getElementById('telefono').value,
+                nitDui: document.getElementById('nitDui').value,
+                nrc: document.getElementById('nrc').value,
+                exentoIVA: document.getElementById('exentoIVA').checked ? 1 : 0,
                 correoElectronico: document.getElementById('correo').value,
-                idMunicipio: document.getElementById('municipio').value,
-                direccion: document.getElementById('complemento').value
+                idMunicipio: document.getElementById('municipio').value
             };
 
-            console.log("Enviando datos:", emisorData); // Agregar log para verificar los datos
+            console.log("Enviando datos:", clienteData); // Agregar log para verificar los datos
 
             try {
-                const response = await fetch('../api/save_emisor.php', {
+                const response = await fetch('../api/save_cliente.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(emisorData)
+                    body: JSON.stringify(clienteData)
                 });
 
                 if (!response.ok) {
@@ -152,16 +175,13 @@
                 alert(result.message);
 
             } catch (error) {
-                console.error('Error al guardar el emisor:', error);
-                alert('Error al guardar el emisor: ' + error.message);
+                console.error('Error al guardar el cliente:', error);
+                alert('Error al guardar el cliente: ' + error.message);
             }
         }
 
-        // Event listener para el formulario de emisor
-        document.getElementById('emisorForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevenir el envío del formulario por defecto
-            createEmisor();
-        });
+        // Event listener para el formulario de cliente
+        document.getElementById('clienteForm').addEventListener('submit', createCliente);
 
         document.addEventListener('DOMContentLoaded', loadDepartamentosYMunicipios);
     </script>

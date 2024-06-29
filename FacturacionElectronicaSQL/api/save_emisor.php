@@ -18,7 +18,7 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 // Verificar que todos los campos obligatorios estén presentes
 if (empty($data['nombreComercial']) || empty($data['nit']) || empty($data['nrc']) || 
     empty($data['telefono']) || empty($data['correoElectronico']) || 
-    empty($data['direccion'])) {
+    empty($data['direccion']) || empty($data['idMunicipio'])) {
     http_response_code(400);
     echo json_encode(["error" => "Todos los campos son obligatorios."]);
     exit;
@@ -29,11 +29,11 @@ $nit = $data['nit'];
 $nrc = $data['nrc'];
 $telefono = $data['telefono'];
 $correoElectronico = $data['correoElectronico'];
-$idMunicipio = 1; // Provisional
+$idMunicipio = $data['idMunicipio']; // Municipio seleccionado
 $direccion = $data['direccion'];
 
 // Asignar valores provisionales a los campos no utilizados
-$razonSocial = "hola";
+$razonSocial = "indeterminada";
 $idUsuario = 1;
 
 $sql = "INSERT INTO t_persona (razonSocial, nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion, idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";

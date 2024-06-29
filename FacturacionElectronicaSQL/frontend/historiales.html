@@ -42,24 +42,27 @@
         </div>
     </nav>
 
-    <!-- Sección del historial de Tokens -->
-<div id="H.TokenSection" style="display: block;">
-    <div class="container">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Fecha de creación</th>
-                        <th>Token</th>
-                    </tr>
-                </thead>
-                <tbody id="hTokenTableBody">
-                    <!-- Las filas se llenarán dinámicamente aquí -->
-                </tbody>
-            </table>
+    <div class="container mt-5">
+        <!-- Sección para mostrar los tokens -->
+        <div class="section" id="TokenSection" style="display:block;">
+            <h2>Historial de Tokens:</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Fecha de Generación</th>
+                            <th>Estado</th>
+                            <th>Token</th>
+                        </tr>
+                    </thead>
+                    <tbody id="TokenTableBody">
+                        <!-- Aquí se insertarán dinámicamente las filas de tokens -->
+                    </tbody>
+                </table>
+            </div>
+            <p id="tokenStatus"></p> <!-- Estado general del token -->
         </div>
     </div>
-</div>
 
 <!-- Sección del historial de DTE -->
 <div id="H.TiposDocumentoSection" style="display: none;">
@@ -137,7 +140,6 @@
 
    
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="js/api.js"></script>
     <script src="js/historiales.js"></script>
 </body>
 
