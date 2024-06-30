@@ -22,31 +22,24 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto"> <!-- Cambio aquí para alinear los elementos a la izquierda -->
-                
+            <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link" id="showEmisorForm">Emisor</button>
+                    <button class="btn btn-link nav-link" id="showEmisorForm">Registro Emisor</button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link" id="showClienteForm">Receptor</button>
+                    <button class="btn btn-link nav-link" id="showClienteForm">Registro Cliente</button>
                 </li>
-                
-
-                
             </ul>
-            <!-- "Historiales" en el lado derecho -->
-            <div class="navbar-nav">
-                <a href="historiales.html" class="nav-item nav-link btn btn-info text-white">Historiales</a>
-            </div>
             <div class="navbar-nav">
                 <a href="inicio.html" class="nav-item nav-link btn btn-info text-white">Inicio</a>
+            </div>
+            <div class="navbar-nav">
+                <a href="registros.html" class="nav-item nav-link btn btn-info text-white">Registros</a>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5"> <!-- Aumenta el margen superior para mayor separación -->
-        
-    </div>
+    
 
     <div class="section" id="emisorSection" >
         <div class="container">
@@ -88,17 +81,17 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="departamento" class="col-sm-3 col-form-label">Departamento</label>
+                            <label for="departamentoEmisor" class="col-sm-3 col-form-label">Departamento</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="departamento" required>
+                                <select class="form-control" id="departamentoEmisor" required>
                                     <!-- Opciones de departamento se llenarán dinámicamente -->
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="municipio" class="col-sm-3 col-form-label">Municipio</label>
+                            <label for="municipioEmisor" class="col-sm-3 col-form-label">Municipio</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="municipio" required>
+                                <select class="form-control" id="municipioEmisor" required>
                                     <!-- Opciones de municipio se llenarán dinámicamente -->
                                 </select>
                             </div>
@@ -118,7 +111,8 @@
     
 
 
-    <div class="section" id="clienteSection" >
+    <!-- Sección del formulario de Cliente -->
+    <div class="section hidden" id="clienteSection">
         <div class="container">
             <div class="card">
                 <div class="card-header">
@@ -136,31 +130,31 @@
                         <div class="form-group row">
                             <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nombreComercial">
+                                <input type="text" class="form-control" id="nombreComercialCliente">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="direccion" class="col-sm-3 col-form-label">Dirección</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="direccion" required>
+                                <input type="text" class="form-control" id="direccionCliente" required>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telefono" required pattern="\d{8,15}" title="El teléfono debe contener entre 8 y 15 dígitos">
+                                <input type="text" class="form-control" id="telefonoCliente" required pattern="\d{8,15}" title="El teléfono debe contener entre 8 y 15 dígitos">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="nitDui" class="col-sm-3 col-form-label">NIT/DUI</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nitDui" required pattern="^\d{4}-\d{6}-\d{3}-\d{1}$" title="El NIT debe tener el formato 0000-000000-000-0">
+                                <input type="text" class="form-control" id="nitDui"  >
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nrc" required pattern="^\d{1,20}$" title="El NRC debe contener hasta 20 dígitos">
+                                <input type="text" class="form-control" id="nrcCliente" required pattern="^\d{1,20}$" title="El NRC debe contener hasta 20 dígitos">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -172,21 +166,21 @@
                         <div class="form-group row">
                             <label for="correo" class="col-sm-3 col-form-label">Correo Electrónico</label>
                             <div class="col-sm-9">
-                                <input type="email" class="form-control" id="correo" required>
+                                <input type="email" class="form-control" id="correoCliente" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="departamento" class="col-sm-3 col-form-label">Departamento</label>
+                            <label for="departamentoCliente" class="col-sm-3 col-form-label">Departamento</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="departamento" required>
+                                <select class="form-control" id="departamentoCliente" required>
                                     <!-- Opciones de departamento se llenarán dinámicamente -->
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="municipio" class="col-sm-3 col-form-label">Municipio</label>
+                            <label for="municipioCliente" class="col-sm-3 col-form-label">Municipio</label>
                             <div class="col-sm-9">
-                                <select class="form-control" id="municipio" required>
+                                <select class="form-control" id="municipioCliente" required>
                                     <!-- Opciones de municipio se llenarán dinámicamente -->
                                 </select>
                             </div>

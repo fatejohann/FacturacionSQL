@@ -2,6 +2,7 @@ let lastToken;
 
 document.addEventListener('DOMContentLoaded', function() {
     getTokens();
+    
 });
 
 // Función para obtener todos los tokens desde el backend
@@ -36,22 +37,6 @@ async function getTokens() {
                 dateCell2.innerText = tokenDate.toLocaleTimeString(); // Mostrar solo la hora
                 tr.appendChild(dateCell2);
 
-                // Estado del token
-                const statusCell = document.createElement('td');
-                const button = document.createElement('button');
-                const currentDate = new Date();
-                const hoursDifference = (currentDate - tokenDate) / (1000 * 60 * 60);
-                if (hoursDifference > 24) {
-                    button.innerText = 'Caducado';
-                    button.className = 'btn btn-danger';
-                    statusCell.classList.add('token-caducado');
-                } else {
-                    button.innerText = 'Vigente';
-                    button.className = 'btn btn-success';
-                    statusCell.classList.add('token-vigente');
-                }
-                statusCell.appendChild(button);
-                tr.appendChild(statusCell);
 
                 // Token
                 const tokenCell = document.createElement('td');
@@ -71,47 +56,56 @@ async function getTokens() {
 }
 
 
+// Función para obtener y mostrar el historial de emisores
+async function getEmisor() {
+    let response;
+    try {
+        response = await fetch('../api/get_emisores.php');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const emisores = await response.json();
+        const tableBody = document.getElementById('hEmisorTableBody');
+        tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos.
+        
+        emisores.forEach((emisor) => {
+            // Crea una fila de tabla por cada registro.
+            let tr = `<tr>
+                <td>${emisor.nombreComercial}</td>
+                <td>${emisor.nit}</td>
+                <td>${emisor.nrc}</td>
+                <td>${emisor.telefono}</td>
+                <td>${emisor.correoElectronico}</td>
+                <td>${emisor.idMunicipio}</td>
+                <td>${emisor.direccion}</td>
+                <td class="text-center">
+                    <button class="btn btn-dark" onclick="modificarEmisor(${emisor.id})">Modificar</button>
+                    <button class="btn btn-danger" onclick="eliminarEmisor(${emisor.id})">Eliminar</button>
+                </td>
+            </tr>`;
+            tableBody.innerHTML += tr;
+        });
+    } catch (error) {
+        console.error('Error al obtener los emisores:', error);
+        document.getElementById('H.EmisorSection').innerHTML = '<p>No se encontraron datos.</p>';
+    }
+}
 
-//historial de emisor
-async function getEmisor(){
-  let response;
-  try {
-      response = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1J__Pzj8RNIrwlojeF-mjBdWYtt9GH3QH3Je5SamLfSI',
-          range: 'h.emisor!A:Q', // Asegúrate de que este rango cubra todas las columnas necesarias.
-      });
-  } catch (err) {
-      console.error('The API returned an error: ' + err);
-      return;
-  }
-
-  const rows = response.result.values;
-  if (rows.length > 0) {
-      const tableBody = document.getElementById('hEmisorTableBody');
-      tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos.
-      // Saltarse la primera fila si contiene los encabezados de las columnas.
-      rows.slice(1).forEach((row) => {
-          // Crea una fila de tabla por cada registro.
-          let tr = `<tr>
-          <td>${row[4]}</td>  <!-- Nombre -->
-          <td>${row[5]}</td>  <!-- Comercial -->
-          <td>${row[3]}</td>  <!-- Actividad -->
-          <td>${row[1]}</td>  <!-- NCR -->
-          <td>${row[0]}</td>  <!-- NIT -->
-          <td>${row[6]}</td>  <!-- Depto. -->
-          <td>${row[7]}</td>  <!-- Muni. -->
-          <td>${row[11]}</td> <!-- Correo -->
-                      <td class="text-center">
-                        <button class="btn btn-dark">Modificar</button>
-                        <button class="btn btn-danger">Eliminar</button>
-                      </td>
-                    </tr>`;
-          tableBody.innerHTML += tr;
-      });
-      document.getElementById("H.EmisorSection").style.display = "none"; // Mostrar la sección.
-  } else {
-      document.getElementById('H.EmisorSection').innerHTML = '<p>No se encontraron datos.</p>';
-  }
+// Función para eliminar un emisor
+async function eliminarEmisor(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este emisor?')) {
+        try {
+            const response = await fetch(`../api/delete_emisor.php?id=${id}`, { method: 'DELETE' });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            alert('Emisor eliminado exitosamente.');
+            getEmisor(); // Recargar la tabla de emisores
+        } catch (error) {
+            console.error('Error al eliminar el emisor:', error);
+            alert('Error al eliminar el emisor.');
+        }
+    }
 }
 
 //historial de receptor
@@ -218,33 +212,38 @@ async function obtenerPdfHacienda(lastToken, codGeneracion) {
   }
 }
 
-//inicio 
+
+
+// Funciones para mostrar las secciones correspondientes
 function showToken() {
-  hideAllSections();
-  document.getElementById("TokenSection").style.display = "block";
+    hideAllSections();
+    document.getElementById('H.TokenSection').classList.remove('hidden');
+    // Llamar a la función para cargar datos si es necesario
+    getTokens();
 }
 
 function showTiposdeDocumento() {
-  hideAllSections();
-  document.getElementById("H.TiposDocumentoSection").style.display = "block";
+    hideAllSections();
+    document.getElementById('H.TiposDeDocumentoSection').classList.remove('hidden');
+    // Llamar a la función para cargar datos si es necesario
 }
 
 function showEmisor() {
-  hideAllSections();
-  document.getElementById("H.EmisorSection").style.display = "block";
+    hideAllSections();
+    document.getElementById('H.EmisorSection').classList.remove('hidden');
+    // Llamar a la función para cargar datos si es necesario
+    getEmisor();
 }
 
 function showReceptor() {
-  hideAllSections();
-  document.getElementById("H.ReceptorSection").style.display = "block";
+    hideAllSections();
+    document.getElementById('H.ReceptorSection').classList.remove('hidden');
+    // Llamar a la función para cargar datos si es necesario
 }
 
 function hideAllSections() {
-  document.getElementById("TokenSection").style.display = "none";
-
-  document.getElementById("H.TiposDocumentoSection").style.display = "none";
-
-  document.getElementById("H.EmisorSection").style.display = "none";
-  
-  document.getElementById("H.ReceptorSection").style.display = "none";
+    const sections = document.querySelectorAll('.container.mt-5');
+    sections.forEach(section => {
+        section.classList.add('hidden');
+    });
 }

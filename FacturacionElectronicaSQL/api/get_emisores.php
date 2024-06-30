@@ -2,20 +2,20 @@
 header('Content-Type: application/json');
 include 'config.php';
 
-$sql = "SELECT id, nombreDepartamento FROM t_departamento";
+$sql = "SELECT id,nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion FROM t_persona";
 $result = $connection->query($sql);
 
-$departamentos = [];
+$emisores = [];
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
-        $departamentos[] = $row;
+        $emisores[] = $row;
     }
 } else {
     echo json_encode(["message" => "No se encontraron datos."]);
     exit;
 }
 
-echo json_encode($departamentos);
+echo json_encode($emisores);
 
 $connection->close();
 ?>

@@ -2,8 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-header('Content-Type: application/json'); // Asegurarse de que la respuesta es JSON
-
+header('Content-Type: application/json');
 include 'config.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
@@ -21,21 +20,6 @@ if (empty($data['nombreCliente']) || empty($data['direccion']) ||
     !isset($data['exentoIVA']) || empty($data['correoElectronico']) || empty($data['idMunicipio'])) {
     http_response_code(400);
     echo json_encode(["error" => "Todos los campos son obligatorios."]);
-    exit;
-}
-
-// Validaciones adicionales
-if (!filter_var($data['correoElectronico'], FILTER_VALIDATE_EMAIL)) {
-    http_response_code(400);
-    echo json_encode(["error" => "Correo electrónico no válido."]);
-    exit;
-}
-
-
-
-if (!preg_match('/^\d{1,20}$/', $data['nrc'])) {
-    http_response_code(400);
-    echo json_encode(["error" => "Formato de NRC no válido."]);
     exit;
 }
 
