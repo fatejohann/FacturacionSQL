@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('emisorSection').classList.remove('hidden');
         document.getElementById('clienteSection').classList.add('hidden');
         loadDepartamentos('departamentoEmisor'); // Cargar departamentos cuando se muestra la sección de emisor
+        loadGirosComerciales('giroComercial'); // Cargar giros comerciales
     });
 
     document.getElementById('showClienteForm').addEventListener('click', function() {
@@ -23,7 +24,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const departamentoId = this.value;
             loadMunicipios(departamentoId, 'municipioCliente');
         });
+        
+        loadGirosComerciales('giroComercialCliente'); // Cargar giros comerciales para el cliente
     });
+
+    // Llamar a loadGirosComerciales después de cargar todo lo necesario
+    setTimeout(() => {
+        loadGirosComerciales('giroComercial');
+        loadGirosComerciales('giroComercialCliente');
+    }, 500); // Esperar un tiempo prudente para asegurar que los elementos se han cargado
 });
 
 async function loadDepartamentos(selectId) {
@@ -66,21 +75,42 @@ async function loadMunicipios(departamentoId, selectId) {
     }
 }
 
+async function loadGirosComerciales(selectId) {
+    try {
+        const response = await fetch('../api/get_giros_comerciales.php');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const giros = await response.json();
+        const giroSelect = document.getElementById(selectId);
+        giroSelect.innerHTML = '<option value="" disabled selected>Seleccionar uno</option>';
+        giros.forEach(giro => {
+            const option = document.createElement('option');
+            option.value = giro.id;
+            option.textContent = `${giro.codigoGiro} - ${giro.nombreGiro}`;
+            giroSelect.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error al cargar los giros comerciales:', error);
+    }
+}
 
 
-// Función para crear un nuevo emisor
-async function createEmisor() {
+document.getElementById('emisorForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
     const emisorData = {
+        razonSocial: document.getElementById('razonSocial').value,
         nombreComercial: document.getElementById('nombreComercial').value,
         nit: document.getElementById('nit').value,
         nrc: document.getElementById('nrc').value,
         telefono: document.getElementById('telefono').value,
         correoElectronico: document.getElementById('correo').value,
         idMunicipio: document.getElementById('municipioEmisor').value,
-        direccion: document.getElementById('complemento').value
+        direccion: document.getElementById('direccion').value,
+        giroComercial: document.getElementById('giroComercial').value,
+        tipoEstablecimiento: document.getElementById('tipoEstablecimiento').value
     };
-
-    console.log("Enviando datos:", emisorData); // Agregar log para verificar los datos
 
     try {
         const response = await fetch('../api/save_emisor.php', {
@@ -90,45 +120,36 @@ async function createEmisor() {
             },
             body: JSON.stringify(emisorData)
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `Error HTTP: ${response.status}`);
-        }
-
         const result = await response.json();
-        alert(result.message);
-
+        if (response.ok) {
+            alert(result.message);
+        } else {
+            alert(result.error);
+        }
     } catch (error) {
-        console.error('Error al guardar el emisor:', error);
-        alert('Error al guardar el emisor: ' + error.message);
+        console.error('Error:', error);
+        alert('Hubo un problema al registrar el emisor.');
     }
-}
-
-// Event listener para el formulario de emisor
-document.getElementById('emisorForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevenir el envío del formulario por defecto
-    createEmisor();
 });
-
 
 
 // Función para validar y crear un nuevo cliente
 async function createCliente(event) {
     event.preventDefault(); // Prevenir el envío del formulario por defecto
 
-
     const clienteData = {
         nombreCliente: document.getElementById('nombreCliente').value,
-        nombreComercial: document.getElementById('nombreComercialCliente').value,
-        direccion: document.getElementById('direccionCliente').value,
-        telefono: document.getElementById('telefonoCliente').value,
+        nombreComercialCliente: document.getElementById('nombreComercialCliente').value,
+        direccionCliente: document.getElementById('direccionCliente').value,
+        telefonoCliente: document.getElementById('telefonoCliente').value,
         nitDui: document.getElementById('nitDui').value,
-        nrc: document.getElementById('nrcCliente').value,
+        nrcCliente: document.getElementById('nrcCliente').value,
+        giroComercialCliente: document.getElementById('giroComercialCliente').value,
         exentoIVA: document.getElementById('exentoIVA').checked ? 1 : 0,
-        correoElectronico: document.getElementById('correoCliente').value,
-        idMunicipio: document.getElementById('municipioCliente').value
+        correoElectronicoCliente: document.getElementById('correoElectronicoCliente').value,
+        municipioCliente: document.getElementById('municipioCliente').value,
     };
+    
 
     console.log("Enviando datos:", clienteData); // Agregar log para verificar los datos
 

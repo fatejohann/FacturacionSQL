@@ -34,14 +34,15 @@
                 <a href="inicio.html" class="nav-item nav-link btn btn-info text-white">Inicio</a>
             </div>
             <div class="navbar-nav">
-                <a href="registros.html" class="nav-item nav-link btn btn-info text-white">Registros</a>
+                <a href="historiales.html" class="nav-item nav-link btn btn-info text-white">Historiales</a>
             </div>
         </div>
     </nav>
 
     
 
-    <div class="section" id="emisorSection" >
+    <!-- Sección del formulario de Emisor -->
+    <div class="section" id="emisorSection">
         <div class="container">
             <div class="card">
                 <div class="card-header">
@@ -50,6 +51,12 @@
                 <div class="card-body">
                     <!-- Formulario de Registro de Emisor -->
                     <form id="emisorForm">
+                        <div class="form-group row">
+                            <label for="razonSocial" class="col-sm-3 col-form-label">Razón Social</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="razonSocial" required>
+                            </div>
+                        </div>
                         <div class="form-group row">
                             <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
                             <div class="col-sm-9">
@@ -97,9 +104,23 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="complemento" class="col-sm-3 col-form-label">Complemento de Dirección</label>
+                            <label for="direccion" class="col-sm-3 col-form-label">Complemento de Dirección</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="complemento" required>
+                                <input type="text" class="form-control" id="direccion" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="giroComercial" class="col-sm-3 col-form-label">Giro Comercial</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="giroComercial" required>
+                                    <!-- Opciones de giros comerciales se llenarán dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="tipoEstablecimiento" class="col-sm-3 col-form-label">Tipo de Establecimiento</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="tipoEstablecimiento" required>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Registrar Emisor</button>
@@ -108,8 +129,6 @@
             </div>
         </div>
     </div>
-    
-
 
     <!-- Sección del formulario de Cliente -->
     <div class="section hidden" id="clienteSection">
@@ -128,45 +147,54 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
+                            <label for="nombreComercialCliente" class="col-sm-3 col-form-label">Nombre Comercial</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="nombreComercialCliente">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="direccion" class="col-sm-3 col-form-label">Dirección</label>
+                            <label for="direccionCliente" class="col-sm-3 col-form-label">Dirección</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="direccionCliente" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
+                            <label for="telefonoCliente" class="col-sm-3 col-form-label">Teléfono</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telefonoCliente" required pattern="\d{8,15}" title="El teléfono debe contener entre 8 y 15 dígitos">
+                                <input type="text" class="form-control" id="telefonoCliente" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="nitDui" class="col-sm-3 col-form-label">NIT/DUI</label>
+                            <label for="nitDuiCliente" class="col-sm-3 col-form-label">NIT/DUI</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nitDui"  >
+                                <input type="text" class="form-control" id="nitDui" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
+                            <label for="nrcCliente" class="col-sm-3 col-form-label">NRC</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nrcCliente" required pattern="^\d{1,20}$" title="El NRC debe contener hasta 20 dígitos">
+                                <input type="text" class="form-control" id="nrcCliente" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="exentoIVA" class="col-sm-3 col-form-label">Exento de IVA</label>
+                            <label for="giroComercial" class="col-sm-3 col-form-label">Giro Comercial</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="giroComercialCliente" required>
+                                    <!-- Opciones de giros comerciales se llenarán dinámicamente -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="exentoIVACliente" class="col-sm-3 col-form-label">Exento de IVA</label>
                             <div class="col-sm-9">
                                 <input type="checkbox" class="form-control" id="exentoIVA">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="correo" class="col-sm-3 col-form-label">Correo Electrónico</label>
+                            <label for="correoElectronicoCliente" class="col-sm-3 col-form-label">Correo Electrónico</label>
                             <div class="col-sm-9">
-                                <input type="email" class="form-control" id="correoCliente" required>
+                                <input type="email" class="form-control" id="correoElectronicoCliente" required>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -185,6 +213,7 @@
                                 </select>
                             </div>
                         </div>
+                        
                         <button type="submit" class="btn btn-primary">Registrar Cliente</button>
                     </form>
                 </div>

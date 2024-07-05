@@ -14,26 +14,18 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-// Verificar que todos los campos obligatorios estén presentes
-if (empty($data['nombreCliente']) || empty($data['direccion']) || 
-    empty($data['telefono']) || empty($data['nitDui']) || empty($data['nrc']) || 
-    !isset($data['exentoIVA']) || empty($data['correoElectronico']) || empty($data['idMunicipio'])) {
-    http_response_code(400);
-    echo json_encode(["error" => "Todos los campos son obligatorios."]);
-    exit;
-}
-
 $nombreCliente = $data['nombreCliente'];
-$nombreComercial = isset($data['nombreComercial']) ? $data['nombreComercial'] : NULL;
-$direccion = $data['direccion'];
-$telefono = $data['telefono'];
+$nombreComercialCliente = isset($data['nombreComercialCliente']) ? $data['nombreComercialCliente'] : null;
+$direccionCliente = $data['direccionCliente'];
+$telefonoCliente = isset($data['telefonoCliente']) ? $data['telefonoCliente'] : null;
 $nitDui = $data['nitDui'];
-$nrc = $data['nrc'];
-$exentoIVA = $data['exentoIVA'];
-$correoElectronico = $data['correoElectronico'];
-$idMunicipio = $data['idMunicipio'];
+$nrcCliente = $data['nrcCliente'];
+$giroComercialCliente = $data['giroComercialCliente']; // ID del giro comercial
+$exentoIVA = isset($data['exentoIVA']) ? $data['exentoIVA'] : 0;
+$correoElectronicoCliente = $data['correoElectronicoCliente'];
+$municipioCliente = $data['municipioCliente'];
 
-$sql = "INSERT INTO t_cliente (nombreCliente, nombreComercial, direccion, telefono, nitDui, nrc, exentoIVA, correoElectronico, idMunicipio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO t_cliente (nombreCliente, nombreComercial, direccion, telefono, nitDui, nrc, idGiroComercial, exentoIVA, correoElectronico, idMunicipio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $connection->prepare($sql);
 if ($stmt === false) {
@@ -42,7 +34,7 @@ if ($stmt === false) {
     exit;
 }
 
-$stmt->bind_param("ssssssisi", $nombreCliente, $nombreComercial, $direccion, $telefono, $nitDui, $nrc, $exentoIVA, $correoElectronico, $idMunicipio);
+$stmt->bind_param("ssssssissi", $nombreCliente, $nombreComercialCliente, $direccionCliente, $telefonoCliente, $nitDui, $nrcCliente, $giroComercialCliente, $exentoIVA, $correoElectronicoCliente, $municipioCliente);
 
 if ($stmt->execute()) {
     echo json_encode(["message" => "Cliente guardado exitosamente"]);

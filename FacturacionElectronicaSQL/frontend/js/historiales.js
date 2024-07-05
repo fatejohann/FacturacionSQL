@@ -78,8 +78,8 @@ async function getEmisor() {
                 <td>${emisor.correoElectronico}</td>
                 <td>${emisor.idMunicipio}</td>
                 <td>${emisor.direccion}</td>
+                <td>${emisor.idGiroComercial}</td>
                 <td class="text-center">
-                    <button class="btn btn-dark" onclick="modificarEmisor(${emisor.id})">Modificar</button>
                     <button class="btn btn-danger" onclick="eliminarEmisor(${emisor.id})">Eliminar</button>
                 </td>
             </tr>`;
@@ -109,41 +109,31 @@ async function eliminarEmisor(id) {
 }
 
 //historial de receptor
-async function getReceptor(){
-  let response;
-  try {
-      response = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1J__Pzj8RNIrwlojeF-mjBdWYtt9GH3QH3Je5SamLfSI',
-          range: 'h.receptor!A:K', // Asegúrate de que este rango cubra todas las columnas necesarias.
-      });
-  } catch (err) {
-      console.error('The API returned an error: ' + err);
-      return;
-  }
-
-  const rows = response.result.values;
-  if (rows.length > 0) {
-      const tableBody = document.getElementById('hReceptorTableBody');
-      tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos.
-      // Saltarse la primera fila si contiene los encabezados de las columnas.
-      rows.slice(1).forEach((row) => {
-          // Crea una fila de tabla por cada registro.
-          let tr = `<tr>
-                      <td>${row[2]}</td>
-                      <td>${row[0]}</td>
-                      <td>${row[1]}</td>
-                      
-                      
-                    </tr>`;/*<td class="text-center">
-                        <button class="btn btn-dark">Modificar</button>
-                        <button class="btn btn-danger">Eliminar</button>
-                      </td>*/
-          tableBody.innerHTML += tr;
-      });
-      document.getElementById("H.ReceptorSection").style.display = "none"; 
-  } else {
-      document.getElementById('H.ReceptorSection').innerHTML = '<p>No se encontraron datos.</p>';
-  }
+async function getClientes() {
+    let response;
+    try {
+        response = await fetch('../api/get_clientes.php');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const receptores = await response.json();
+        const tableBody = document.getElementById('hReceptorTableBody');
+        tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos.
+        
+        receptores.forEach((receptor) => {
+            // Crea una fila de tabla por cada registro.
+            let tr = `<tr>
+                <td>${receptor.nombreCliente}</td>
+                <td>${receptor.nitDUi}</td>
+                <td>${receptor.nrc}</td>
+                
+            </tr>`;
+            tableBody.innerHTML += tr;
+        });
+    } catch (error) {
+        console.error('Error al obtener los Clientes:', error);
+        document.getElementById('H.ReceptorSection').innerHTML = '<p>No se encontraron datos.</p>';
+    }
 }
 
 //historial de dte
@@ -239,6 +229,7 @@ function showReceptor() {
     hideAllSections();
     document.getElementById('H.ReceptorSection').classList.remove('hidden');
     // Llamar a la función para cargar datos si es necesario
+    getClientes();
 }
 
 function hideAllSections() {

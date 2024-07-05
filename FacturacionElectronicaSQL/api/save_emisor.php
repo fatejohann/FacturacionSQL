@@ -2,8 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-header('Content-Type: application/json'); // Asegurarse de que la respuesta es JSON
-
+header('Content-Type: application/json');
 include 'config.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
@@ -16,27 +15,27 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 }
 
 // Verificar que todos los campos obligatorios estén presentes
-if (empty($data['nombreComercial']) || empty($data['nit']) || empty($data['nrc']) || 
-    empty($data['telefono']) || empty($data['correoElectronico']) || 
-    empty($data['direccion']) || empty($data['idMunicipio'])) {
+if (empty($data['razonSocial']) || empty($data['nombreComercial']) || empty($data['nit']) || empty($data['nrc']) ||
+    empty($data['telefono']) || empty($data['correoElectronico']) || empty($data['idMunicipio']) || empty($data['direccion']) ||
+    empty($data['giroComercial']) || empty($data['tipoEstablecimiento'])) {
     http_response_code(400);
     echo json_encode(["error" => "Todos los campos son obligatorios."]);
     exit;
 }
 
+$razonSocial = $data['razonSocial'];
 $nombreComercial = $data['nombreComercial'];
 $nit = $data['nit'];
 $nrc = $data['nrc'];
 $telefono = $data['telefono'];
 $correoElectronico = $data['correoElectronico'];
-$idMunicipio = $data['idMunicipio']; // Municipio seleccionado
+$idMunicipio = $data['idMunicipio'];
 $direccion = $data['direccion'];
+$idGiroComercial = $data['giroComercial'];
+$tipoEstablecimiento = $data['tipoEstablecimiento'];
+$idUsuario = 1; // Suponiendo que hay un usuario relacionado
 
-// Asignar valores provisionales a los campos no utilizados
-$razonSocial = "indeterminada";
-$idUsuario = 1;
-
-$sql = "INSERT INTO t_persona (razonSocial, nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion, idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO t_persona (razonSocial, nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion, idGiroComercial, tipoEstablecimiento, idUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $connection->prepare($sql);
 if ($stmt === false) {
@@ -45,7 +44,7 @@ if ($stmt === false) {
     exit;
 }
 
-$stmt->bind_param("ssssssisi", $razonSocial, $nombreComercial, $nit, $nrc, $telefono, $correoElectronico, $idMunicipio, $direccion, $idUsuario);
+$stmt->bind_param("ssssssisssi", $razonSocial, $nombreComercial, $nit, $nrc, $telefono, $correoElectronico, $idMunicipio, $direccion, $idGiroComercial, $tipoEstablecimiento, $idUsuario);
 
 if ($stmt->execute()) {
     echo json_encode(["message" => "Emisor guardado exitosamente"]);

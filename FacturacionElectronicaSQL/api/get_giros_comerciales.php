@@ -2,20 +2,20 @@
 header('Content-Type: application/json');
 include 'config.php';
 
-$sql = "SELECT id,nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion, idGiroComercial FROM t_persona";
+$sql = "SELECT id, codigoGiro, nombreGiro FROM t_giro_comercial";
 $result = $connection->query($sql);
 
-$emisores = [];
+$girosComerciales = [];
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
-        $emisores[] = $row;
+        $girosComerciales[] = $row;
     }
 } else {
     echo json_encode(["message" => "No se encontraron datos."]);
     exit;
 }
 
-echo json_encode($emisores);
+echo json_encode($girosComerciales);
 
 $connection->close();
 ?>
