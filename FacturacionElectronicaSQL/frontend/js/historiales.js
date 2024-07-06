@@ -110,31 +110,69 @@ async function eliminarEmisor(id) {
 
 //historial de receptor
 async function getClientes() {
-    let response;
     try {
-        response = await fetch('../api/get_clientes.php');
+        const response = await fetch('../api/get_clientes.php');
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(`Error HTTP: ${response.status}`);
         }
-        const receptores = await response.json();
-        const tableBody = document.getElementById('hReceptorTableBody');
-        tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos.
-        
-        receptores.forEach((receptor) => {
-            // Crea una fila de tabla por cada registro.
-            let tr = `<tr>
-                <td>${receptor.nombreCliente}</td>
-                <td>${receptor.nitDUi}</td>
-                <td>${receptor.nrc}</td>
-                
-            </tr>`;
-            tableBody.innerHTML += tr;
+
+        const clientes = await response.json();
+
+        // Log para verificar los datos obtenidos
+        console.log('Clientes obtenidos:', clientes);
+
+        const tableBody = document.getElementById('hClienteTableBody');
+        tableBody.innerHTML = '';
+
+        clientes.forEach(cliente => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${cliente.nombreCliente}</td>
+                <td>${cliente.nombreComercial}</td>
+                <td>${cliente.nitDui}</td>
+                <td>${cliente.nrc}</td>
+                <td>${cliente.telefono}</td>
+                <td>${cliente.correoElectronico}</td>
+                <td>${cliente.municipio}</td>
+                <td>${cliente.direccion}</td>
+                <td>${cliente.giroComercial}</td>
+                <td>${cliente.exentoIVA ? 'Sí' : 'No'}</td>
+                <td>
+                    <button class="btn btn-danger" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
+                </td>
+            `;
+            tableBody.appendChild(row);
         });
     } catch (error) {
-        console.error('Error al obtener los Clientes:', error);
-        document.getElementById('H.ReceptorSection').innerHTML = '<p>No se encontraron datos.</p>';
+        console.error('Error al obtener los clientes:', error);
     }
 }
+
+
+// Función para eliminar un cliente
+async function eliminarCliente(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
+        try {
+            const response = await fetch(`http://localhost:3000/FacturacionElectronicaSQL/api/delete_cliente.php`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `id=${id}`
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            alert('Cliente eliminado exitosamente.');
+            getClientes(); // Recargar la tabla de clientes
+        } catch (error) {
+            console.error('Error al eliminar el cliente:', error);
+            alert('Error al eliminar el cliente.');
+        }
+    }
+}
+
+
 
 //historial de dte
 // Función para obtener el historial de tipos de DTE de Google Sheets
@@ -208,29 +246,26 @@ async function obtenerPdfHacienda(lastToken, codGeneracion) {
 function showToken() {
     hideAllSections();
     document.getElementById('H.TokenSection').classList.remove('hidden');
-    // Llamar a la función para cargar datos si es necesario
     getTokens();
 }
 
 function showTiposdeDocumento() {
     hideAllSections();
     document.getElementById('H.TiposDeDocumentoSection').classList.remove('hidden');
-    // Llamar a la función para cargar datos si es necesario
 }
 
 function showEmisor() {
     hideAllSections();
     document.getElementById('H.EmisorSection').classList.remove('hidden');
-    // Llamar a la función para cargar datos si es necesario
     getEmisor();
 }
 
-function showReceptor() {
+function showClientes() {
     hideAllSections();
-    document.getElementById('H.ReceptorSection').classList.remove('hidden');
-    // Llamar a la función para cargar datos si es necesario
+    document.getElementById('H.ClienteSection').classList.remove('hidden');
     getClientes();
 }
+
 
 function hideAllSections() {
     const sections = document.querySelectorAll('.container.mt-5');

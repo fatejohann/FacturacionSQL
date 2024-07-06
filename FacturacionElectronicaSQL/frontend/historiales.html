@@ -31,7 +31,7 @@
                     <button class="btn btn-link nav-link" onclick="showEmisor()">H.Emisor</button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link" onclick="showReceptor()">H.Receptor</button>
+                    <button class="btn btn-link nav-link" onclick="showClientes()">H.Receptor</button>
                 </li>
             </ul>
             <div class="navbar-nav">
@@ -86,26 +86,33 @@
 </div>
 
 <!-- Sección del historial de Receptor -->
-<div id="H.ReceptorSection" style="display: none;">
-    <div class="container text-center mt-5">
-        <h1 class="mb-4">Receptor</h1>
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">NIT</th>
-                        <th scope="col">NRC</th>
-                     <!--   <th scope="col">Acciones</th>   -->   
-                    </tr>
-                </thead>
-                <tbody id="hReceptorTableBody">
-                    <!-- Las filas se llenarán dinámicamente aquí -->
-                </tbody>
-            </table>
-        </div>
+<!-- Sección del historial de Clientes -->
+<div id="H.ClienteSection" class="container mt-5 hidden">
+    <h1 class="mb-4">Historial de Clientes</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Nombre del Cliente</th>
+                    <th scope="col">Nombre Comercial</th>
+                    <th scope="col">NIT/DUI</th>
+                    <th scope="col">NRC</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Correo Electrónico</th>
+                    <th scope="col">Municipio</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Giro Comercial</th>
+                    <th scope="col">Exento de IVA</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="hClienteTableBody">
+                <!-- Las filas se llenarán dinámicamente aquí -->
+            </tbody>
+        </table>
     </div>
 </div>
+
 
 <!-- Sección del historial de Emisor -->
 <div id="H.EmisorSection" class="container mt-5 hidden">
