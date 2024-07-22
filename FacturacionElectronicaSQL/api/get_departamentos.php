@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 include 'config.php';
 
-$sql = "SELECT id, nombreDepartamento FROM t_departamento";
+$sql = "SELECT id, nombreDepartamento,codigoDepartamento FROM t_departamento";
 $result = $connection->query($sql);
 
 $departamentos = [];

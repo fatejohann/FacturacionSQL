@@ -2,15 +2,15 @@
 header('Content-Type: application/json');
 include 'config.php';
 
-if (!isset($_GET['departamento_id'])) {
+if (!isset($_GET['idMunicipio'])) {
     http_response_code(400);
-    echo json_encode(["error" => "ID del departamento no proporcionado."]);
+    echo json_encode(["error" => "ID de municipio no proporcionado."]);
     exit;
 }
 
-$departamento_id = $_GET['departamento_id'];
+$idMunicipio = $_GET['idMunicipio'];
 
-$sql = "SELECT id, nombreMunicipio,codigoMunicipio FROM t_municipio WHERE idDepartamento = ?";
+$sql = "SELECT idDepartamento FROM t_municipio WHERE id = ?";
 $stmt = $connection->prepare($sql);
 if ($stmt === false) {
     http_response_code(500);
@@ -18,18 +18,16 @@ if ($stmt === false) {
     exit;
 }
 
-$stmt->bind_param("i", $departamento_id);
+$stmt->bind_param("i", $idMunicipio);
 
 if ($stmt->execute()) {
     $result = $stmt->get_result();
-    $municipios = [];
     if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $municipios[] = $row;
-        }
-        echo json_encode($municipios);
+        $row = $result->fetch_assoc();
+        $idDepartamento = $row['idDepartamento'];
+        echo json_encode(["idDepartamento" => $idDepartamento]);
     } else {
-        echo json_encode(["message" => "No se encontraron datos."]);
+        echo json_encode(["message" => "No se encontró el departamento para este municipio."]);
     }
 } else {
     http_response_code(500);

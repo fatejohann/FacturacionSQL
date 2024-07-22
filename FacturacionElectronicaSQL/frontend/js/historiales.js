@@ -2,7 +2,6 @@ let lastToken;
 
 document.addEventListener('DOMContentLoaded', function() {
     getTokens();
-    
 });
 
 // Función para obtener todos los tokens desde el backend

@@ -14,7 +14,7 @@ function cargarFactura(tipoDocumento) {
             version: 1,
             ambiente: "00",
             tipoDte: "01",
-            numeroControl: "DTE-01-0001ONEC-000000000005038",
+            numeroControl: "DTE-01-0001ONEC-000000000005040",
             codigoGeneracion: "48634903-FC58-45F9-9173-F9206D016489",
             tipoModelo: 1,
             tipoOperacion: 1,
@@ -170,7 +170,7 @@ function cargarFactura(tipoDocumento) {
             version: 3,
             ambiente: "00",
             tipoDte: "03",
-            numeroControl: "DTE-03-0001ONEC-000000000005051",
+            numeroControl: "DTE-03-0001ONEC-000000000005063",
             codigoGeneracion: "D7A32E8C-06C0-41A2-9E2F-A094C994AFDE",
             tipoModelo: 1,
             tipoOperacion: 1,
@@ -218,62 +218,7 @@ function cargarFactura(tipoDocumento) {
           },
           otrosDocumentos: null,
           ventaTercero: null,
-          cuerpoDocumento: [
-            {
-              numItem: 1,
-              tipoItem: 1,
-              numeroDocumento: null,
-              codigo: "37578",
-              codTributo: null,
-              descripcion: "Shampoo Pantene",
-              cantidad: 2.0,
-              uniMedida: 59,
-              precioUni: 10.0,
-              montoDescu: 0.0,
-              ventaNoSuj: 0.0,
-              ventaExenta: 0.0,
-              ventaGravada: 20.0,
-              tributos: ["20"],
-              psv: 0.0,
-              noGravado: 0.0,
-            },
-            {
-              numItem: 2,
-              tipoItem: 1,
-              numeroDocumento: null,
-              codigo: "63840",
-              codTributo: null,
-              descripcion: "Jamon de pavo Vita",
-              cantidad: 3.0,
-              uniMedida: 1,
-              precioUni: 1.25,
-              montoDescu: 0.0,
-              ventaNoSuj: 0.0,
-              ventaExenta: 0.0,
-              ventaGravada: 3.75,
-              tributos: ["20"],
-              psv: 0.0,
-              noGravado: 0.0,
-            },
-            {
-              numItem: 3,
-              tipoItem: 1,
-              numeroDocumento: null,
-              codigo: "149801",
-              codTributo: null,
-              descripcion: "Cafe Instantaneo Mussun",
-              cantidad: 1.0,
-              uniMedida: 59,
-              precioUni: 2.0,
-              montoDescu: 0.0,
-              ventaNoSuj: 0.0,
-              ventaExenta: 0.0,
-              ventaGravada: 2.0,
-              tributos: ["20"],
-              psv: 0.0,
-              noGravado: 0.0,
-            },
-          ],
+          cuerpoDocumento: [],
           resumen: {
             totalNoSuj: 0.0,
             totalExenta: 0.0,
@@ -355,13 +300,17 @@ document.addEventListener("DOMContentLoaded", function () {
         facturaJson.dteJson.identificacion.horEmi =
           new Date().toLocaleTimeString("en-GB"); // Actualiza la hora de emisión
 
-        //Capturar y actualizar datos de Emisor
+        // Capturar y actualizar datos de Emisor
         const datosEmisor = capturarDatosEmisor();
         facturaJson.dteJson.emisor.nit = datosEmisor.nit;
         facturaJson.dteJson.emisor.nrc = datosEmisor.nrc;
         facturaJson.dteJson.emisor.nombre = datosEmisor.nombre;
         facturaJson.dteJson.emisor.codActividad = datosEmisor.codActividad;
         facturaJson.dteJson.emisor.descActividad = datosEmisor.descActividad;
+
+        console.log(datosEmisor.codActividad);
+        console.log(datosEmisor.descActividad);
+
         facturaJson.dteJson.emisor.nombreComercial =
           datosEmisor.nombreComercial;
         facturaJson.dteJson.emisor.direccion.departamento =
@@ -373,10 +322,6 @@ document.addEventListener("DOMContentLoaded", function () {
         facturaJson.dteJson.emisor.correo = datosEmisor.correo;
 
         //facturaJson.dteJson.emisor.tipoEstablecimiento = datosEmisor.tipoEstablecimiento;
-        /*facturaJson.dteJson.emisor.codEstableMH = datosEmisor.codEstableMH;
-facturaJson.dteJson.emisor.codEstable = datosEmisor.codEstable;
-facturaJson.dteJson.emisor.codPuntoVentaMH = datosEmisor.codPuntoVentaMH;
-facturaJson.dteJson.emisor.codPuntoVenta = datosEmisor.codPuntoVenta;*/
 
         // Capturar y actualizar datos de Receptor
         const datosReceptor = capturarDatosReceptor();
@@ -397,8 +342,20 @@ facturaJson.dteJson.emisor.codPuntoVenta = datosEmisor.codPuntoVenta;*/
         facturaJson.dteJson.receptor.telefono = datosReceptor.telefono;
         facturaJson.dteJson.receptor.correo = datosReceptor.correo;
 
+        console.log(datosReceptor.codActividad); // Debería mostrar el código de giro del receptor
+        console.log(datosReceptor.descActividad); // Debería mostrar el nombre de giro del receptor
+
+        // Capturar y actualizar datos de Detalles
+        const detalles = capturarDatosDetalles();
+        facturaJson.dteJson.cuerpoDocumento = detalles;
+
+        // Calcular el resumen y actualizar en el JSON
+        const resumen = calcularResumen(detalles);
+        facturaJson.dteJson.resumen = resumen;
+
         // Envía la factura
         await enviarFactura(facturaJson, documentoSeleccionado);
+        console.log(facturaJson);
       } catch (error) {
         console.error("Error en el proceso de envío:", error);
         alert("Error en el proceso de envío");
@@ -473,7 +430,7 @@ async function enviarFactura(facturaJson, documentoSeleccionado) {
     // Obtener la fecha de creación
     const fechaCreacion = new Date().toISOString();
 
-    // Crear un arreglo con los datos a enviar a la hoja de Google Sheets
+    // crear el envio de algunos campos a mi base de datos
     const dataToSend = [
       fechaCreacion,
       estado,
@@ -482,9 +439,6 @@ async function enviarFactura(facturaJson, documentoSeleccionado) {
       fechaEmitido,
       documentoSeleccionado,
     ];
-
-    // Llamar a la función para enviar los datos a la hoja de Google Sheets
-    sendDataToSheet("h.TiposDeDocumento", dataToSend);
 
     alert("Factura enviada con éxito");
   } catch (error) {
@@ -530,41 +484,120 @@ function generarUUID() {
     .toUpperCase();
 }
 
-// Capturar datos de los formularios y actualizar JSON
-//deben ser siempre los mismos(los de juan)
+function convertirNumeroALetras(num) {
+  const unidades = ["", "UNO", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"];
+  const decenas = ["", "DIEZ", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"];
+  const centenasArray = ["", "CIEN", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"];
+  const especiales = ["", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE"];
+  const especiales2 = ["", "VEINTIUNO", "VEINTIDOS", "VEINTITRES", "VEINTICUATRO", "VEINTICINCO", "VEINTISEIS", "VEINTISIETE", "VEINTIOCHO", "VEINTINUEVE"];
+
+  function convertGroup(n) {
+    let output = "";
+    if (n === 100) {
+      return "CIEN";
+    } else if (n < 1000) {
+      output += centenasArray[Math.floor(n / 100)];
+      n = n % 100;
+    }
+
+    if (n >= 30) {
+      output += (output ? " " : "") + decenas[Math.floor(n / 10)];
+      n = n % 10;
+    } else if (n >= 20) {
+      output += (output ? " " : "") + (n === 20 ? "VEINTE" : especiales2[n - 20]);
+      n = 0;
+    } else if (n >= 10) {
+      output += (output ? " " : "") + (n === 10 ? "DIEZ" : especiales[n - 10]);
+      n = 0;
+    } else if (n > 0) {
+      output += (output ? " " : "") + unidades[n];
+      n = 0;
+    }
+    return output;
+  }
+
+  function splitNumber(num) {
+    const parts = num.toString().split('.');
+    const wholePart = parseInt(parts[0], 10);
+    const fractionalPart = parts[1] ? parseInt(parts[1].padEnd(2, '0'), 10) : 0;
+    return [wholePart, fractionalPart];
+  }
+
+  const [wholePart, fractionalPart] = splitNumber(num);
+  const millones = Math.floor(wholePart / 1000000);
+  const miles = Math.floor((wholePart % 1000000) / 1000);
+  const centenasParte = wholePart % 1000;
+
+  let literal = "";
+
+  if (millones > 0) {
+    literal += convertGroup(millones) + " MILLON" + (millones > 1 ? "ES" : "");
+  }
+
+  if (miles > 0) {
+    literal += (literal ? " " : "") + convertGroup(miles) + " MIL";
+  }
+
+  if (centenasParte > 0) {
+    literal += (literal ? " " : "") + convertGroup(centenasParte);
+  }
+
+  if (literal === "") {
+    literal = "CERO";
+  }
+
+  if (fractionalPart > 0) {
+    literal += ` CON ${convertGroup(fractionalPart)} CENTAVOS`;
+  }
+
+  literal += " USD";
+
+  return literal;
+}
+
 function capturarDatosEmisor() {
+  const departamentoSelect = document.getElementById(
+    "departamentoEmisorInicio"
+  );
+  const municipioSelect = document.getElementById("municipioEmisorInicio");
+
+  const codActividadGiro = codigoGiroGlobal;
+  const descActividadGiro = nombreGiroGlobal;
+
   return {
-    nit: document.getElementById("NIT").value,
+    nit: document.getElementById("nitEmisor").value,
     nrc: document.getElementById("nrc").value,
-    nombre: document.getElementById("nombre").value,
-    codActividad: document.getElementById("codActividad").value,
-    descActividad: document.getElementById("descActividad").value,
+    nombre: document.getElementById("razonSocial").value,
+    codActividad: codActividadGiro,
+    descActividad: descActividadGiro,
     nombreComercial: document.getElementById("nombreComercial").value,
-    departamento: document.getElementById("departamento").value,
-    municipio: document.getElementById("municipio").value,
-    complemento: document.getElementById("complemento").value,
+    departamento:
+      departamentoSelect.selectedOptions[0].getAttribute("data-codigo"),
+    municipio: municipioSelect.selectedOptions[0].getAttribute("data-codigo"),
+    complemento: document.getElementById("direccion").value,
     telefono: document.getElementById("telefono").value,
-    correo: document.getElementById("correo").value
-    //tipoEstablecimiento: document.getElementById("tipoEstablecimiento").value,
-   /* codEstableMH: document.getElementById("codEstableMH").value,
-    codEstable: document.getElementById("codEstable").value,
-    codPuntoVentaMH: document.getElementById("codPuntoVentaMH").value,
-    codPuntoVenta: document.getElementById("codPuntoVenta").value,*/
+    correo: document.getElementById("correo").value,
   };
 }
 
 function capturarDatosReceptor() {
+  const departamentoSelect = document.getElementById("departamentoReceptor");
+  const municipioSelect = document.getElementById("municipioReceptor");
+  const codActividadGiro = codigoGiroGlobalReceptor;
+  const descActividadGiro = nombreGiroGlobalReceptor;
+
   return {
     nit: document.getElementById("nitReceptor").value,
-    nrc: document.getElementById("nrc").value,
-    nombre: document.getElementById("nombreReceptor").value,
-    codActividad: document.getElementById("codActividad").value,
-    descActividad: document.getElementById("descActividad").value,
-    nombreComercial: document.getElementById("nombreComercial").value,
-    departamento: document.getElementById("departamentoReceptor").value,
-    municipio: document.getElementById("municipioReceptor").value,
-    complemento: document.getElementById("complemento").value,
-    telefono: document.getElementById("telefono").value,
+    nrc: document.getElementById("nrcReceptor").value,
+    nombre: document.getElementById("NombreCliente").value,
+    codActividad: codActividadGiro,
+    descActividad: descActividadGiro,
+    nombreComercial: document.getElementById("nombreComercialReceptor").value,
+    departamento:
+      departamentoSelect.selectedOptions[0].getAttribute("data-codigo"),
+    municipio: municipioSelect.selectedOptions[0].getAttribute("data-codigo"),
+    complemento: document.getElementById("direccionReceptor").value,
+    telefono: document.getElementById("telefonoReceptor").value,
     correo: document.getElementById("correoReceptor").value,
   };
 }

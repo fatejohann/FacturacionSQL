@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 include 'config.php';
 
-$sql = "SELECT id,nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion, idGiroComercial FROM t_persona";
+$sql = "SELECT id,razonSocial,nombreComercial, nit, nrc, telefono, correoElectronico, idMunicipio, direccion, idGiroComercial FROM t_persona";
 $result = $connection->query($sql);
 
 $emisores = [];
