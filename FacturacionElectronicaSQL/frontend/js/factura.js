@@ -1,4 +1,5 @@
 lastToken;
+let estado;
 
 function cargarFactura(tipoDocumento) {
   let facturaJson = {};
@@ -170,7 +171,7 @@ function cargarFactura(tipoDocumento) {
             version: 3,
             ambiente: "00",
             tipoDte: "03",
-            numeroControl: "DTE-03-0001ONEC-000000000005063",
+            numeroControl: "DTE-03-0001ONEC-000000000005068",
             codigoGeneracion: "D7A32E8C-06C0-41A2-9E2F-A094C994AFDE",
             tipoModelo: 1,
             tipoOperacion: 1,
@@ -274,31 +275,27 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("submitDocumentButton")
     .addEventListener("click", async function () {
+      let dataRecepcion = null; 
+      let facturaJson = null;
+      let documentoData = null;
+
       try {
-        const documentoSeleccionado =
-          document.getElementById("documentType").value;
-        let facturaJson = cargarFactura(documentoSeleccionado);
+       //agregar swicth con casos para envio de cada dte
 
+
+        // Generar y modificar el JSON de la factura
+        const documentoSeleccionado = document.getElementById("documentType").value;
+        facturaJson = cargarFactura(documentoSeleccionado);
+
+        // Generar el nuevo número de control y código de generación
         let tipoDte = facturaJson.dteJson.identificacion.tipoDte;
-
-        // Generar el nuevo número de control
-        const nuevoNumeroControl = generarNuevoNumeroControl(
+        facturaJson.dteJson.identificacion.numeroControl = generarNuevoNumeroControl(
           facturaJson.dteJson.identificacion.numeroControl,
           tipoDte
         );
-
-        // Sobreescribir el número de control en el JSON original
-        facturaJson.dteJson.identificacion.numeroControl = nuevoNumeroControl;
-
-        // Generar el nuevo código de generación
         facturaJson.dteJson.identificacion.codigoGeneracion = generarUUID();
-
-        // Modifica el JSON según sea necesario
-        facturaJson.dteJson.identificacion.fecEmi = new Date()
-          .toISOString()
-          .split("T")[0]; // Actualiza la fecha de emisión
-        facturaJson.dteJson.identificacion.horEmi =
-          new Date().toLocaleTimeString("en-GB"); // Actualiza la hora de emisión
+        facturaJson.dteJson.identificacion.fecEmi = new Date().toISOString().split("T")[0];
+        facturaJson.dteJson.identificacion.horEmi = new Date().toLocaleTimeString("en-GB");
 
         // Capturar y actualizar datos de Emisor
         const datosEmisor = capturarDatosEmisor();
@@ -353,9 +350,79 @@ document.addEventListener("DOMContentLoaded", function () {
         const resumen = calcularResumen(detalles);
         facturaJson.dteJson.resumen = resumen;
 
-        // Envía la factura
-        await enviarFactura(facturaJson, documentoSeleccionado);
-        console.log(facturaJson);
+        try {
+          // Intentar enviar la factura
+          dataRecepcion = await enviarFactura(facturaJson, documentoSeleccionado);
+        } catch (error) {
+          console.error("Error al enviar la factura:", error);
+        }
+
+        // Continuar el proceso y construir el objeto para guardar en la base de datos
+        const estado = dataRecepcion.estado || "INGRESADO";
+        const codigoGeneracion = facturaJson.dteJson.identificacion.codigoGeneracion;
+
+        // Mapear el estado del documento
+        let idEstadoDocumento;
+        switch (estado) {
+          case "INGRESADO":
+            idEstadoDocumento = 1;
+            break;
+          case "PROCESADO":
+            idEstadoDocumento = 2;
+            break;
+          case "RECHAZADO":
+            idEstadoDocumento = 3;
+            break;
+          default:
+            idEstadoDocumento = 1;
+            break;
+        }
+
+        // Crear objeto con los datos del documento para enviar a la base de datos
+        documentoData = {
+          noDocumento: facturaJson.dteJson.identificacion.numeroControl,
+          fechaDocumento: facturaJson.dteJson.identificacion.fecEmi,
+          horaDocumento: facturaJson.dteJson.identificacion.horEmi,
+          idEstadoDocumento,
+          idCliente: datosReceptor.idCliente || 1,
+          totalVentasExentas: resumen.totalVentasExentas || 0,
+          totalVentasNoSujetas: resumen.totalVentasNoSujetas || 0,
+          totalVentasGravadas: resumen.totalVentasGravadas || 0,
+          ivaDocumento: resumen.ivaDocumento || 0,
+          retencionIVA: resumen.retencionIVA || 0,
+          totalDocumento: resumen.totalDocumento || 0,
+          numeroControl: facturaJson.dteJson.identificacion.numeroControl,
+          codigoGeneracion,
+
+          clasificacionMsg: dataRecepcion?.clasificaMsg || "",
+          codigoMsg: dataRecepcion?.codigoMsg || "",
+          descripcionMsg: dataRecepcion?.descripcionMsg || "",
+
+          idArchivoJson: null,
+          idArchivoPDF: null,
+          idTipoPago: datosReceptor.idTipoPago || 1,
+          idPlazoPago: datosReceptor.idPlazoPago || 1,
+          idLote: null,
+          idBodegaSucursal: datosEmisor.idBodegaSucursal || 1,
+          idUsuario: datosEmisor.idUsuario || 1,
+          subTotalVentas: resumen.subTotalVentas || 0,
+          descuentoNoSujetas: resumen.descuentoNoSujetas || 0,
+          descuentoExentas: resumen.descuentoExentas || 0,
+          descuentoGravadas: resumen.descuentoGravadas || 0,
+          porcentajeDescuento: resumen.porcentajeDescuento || 0,
+          totalDescuentos: resumen.totalDescuentos || 0,
+          subTotal: resumen.subTotal || 0,
+          ivaPercibido: resumen.ivaPercibido || 0,
+          retencionRenta: resumen.retencionRenta || 0,
+          montoTotalOperacion: resumen.montoTotalOperacion || 0,
+          totalNoGravado: resumen.totalNoGravado || 0,
+          totalPagar: resumen.totalPagar || 0,
+          totalLetras: resumen.totalLetras || "",
+          totalIva: resumen.totalIva || 0,
+        };
+
+        // Intentar guardar el documento en la base de datos
+        await guardarDocumento(documentoData);
       } catch (error) {
         console.error("Error en el proceso de envío:", error);
         alert("Error en el proceso de envío");
@@ -405,47 +472,51 @@ async function enviarFactura(facturaJson, documentoSeleccionado) {
           "Content-Type": "application/json",
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
-          Authorization: lastToken, // Utilizar el token almacenado
+          Authorization: lastToken,
         },
         body: JSON.stringify(dte),
       }
     );
 
-    const responseText = await responseRecepcion.text(); // Obtener la respuesta como texto
-    console.log("Respuesta de recepciondte:", responseText);
-
-    if (!responseRecepcion.ok) {
-      throw new Error(`Error en la respuesta de recepciondte: ${responseText}`);
-    }
-
-    const dataRecepcion = JSON.parse(responseText); // Parsear la respuesta si fue exitosa
+   
+    const dataRecepcion = await responseRecepcion.json();
     console.log("Respuesta de recepciondte (JSON):", dataRecepcion);
-
-    // Extraer los datos necesarios de la respuesta
-    const estado = dataRecepcion.estado;
-    const selloRecibido = dataRecepcion.selloRecibido;
-    const codigoGeneracion = dataRecepcion.codigoGeneracion;
-    const fechaEmitido = facturaJson.dteJson.identificacion.fecEmi; // Utilizar la fecha de emisión del documento
-
-    // Obtener la fecha de creación
-    const fechaCreacion = new Date().toISOString();
-
-    // crear el envio de algunos campos a mi base de datos
-    const dataToSend = [
-      fechaCreacion,
-      estado,
-      selloRecibido,
-      codigoGeneracion,
-      fechaEmitido,
-      documentoSeleccionado,
-    ];
-
-    alert("Factura enviada con éxito");
+    return dataRecepcion;
   } catch (error) {
     console.error("Error al enviar la factura:", error);
     alert("Error al enviar la factura");
+    throw error; // Asegura que el error se propague
   }
 }
+
+async function guardarDocumento(documentoData) {
+  try {
+    // Imprimir la información que se va a enviar a la base de datos
+    console.log("Datos que se enviarán a la base de datos:", documentoData);
+
+    // Enviar la solicitud para guardar el documento
+    const response = await fetch("../api/save_documento_facturacion.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(documentoData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || `Error HTTP: ${response.status}`);
+    }
+
+    const result = await response.json();
+    alert(result.message);
+  } catch (error) {
+    console.error("Error al guardar el documento:", error);
+    alert("Error al guardar el documento: " + error.message);
+  }
+}
+
+//funciono de enviar detalles(cuerpo de documento) a la tabla `t_detalle_documento_facturacion` el cual toma cada detalle como un registro
 
 function generarNuevoNumeroControl(numeroControlActual, tipodte) {
   // Extraer el número actual del formato
@@ -482,77 +553,6 @@ function generarUUID() {
       return v.toString(16);
     })
     .toUpperCase();
-}
-
-function convertirNumeroALetras(num) {
-  const unidades = ["", "UNO", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"];
-  const decenas = ["", "DIEZ", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"];
-  const centenasArray = ["", "CIEN", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"];
-  const especiales = ["", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE"];
-  const especiales2 = ["", "VEINTIUNO", "VEINTIDOS", "VEINTITRES", "VEINTICUATRO", "VEINTICINCO", "VEINTISEIS", "VEINTISIETE", "VEINTIOCHO", "VEINTINUEVE"];
-
-  function convertGroup(n) {
-    let output = "";
-    if (n === 100) {
-      return "CIEN";
-    } else if (n < 1000) {
-      output += centenasArray[Math.floor(n / 100)];
-      n = n % 100;
-    }
-
-    if (n >= 30) {
-      output += (output ? " " : "") + decenas[Math.floor(n / 10)];
-      n = n % 10;
-    } else if (n >= 20) {
-      output += (output ? " " : "") + (n === 20 ? "VEINTE" : especiales2[n - 20]);
-      n = 0;
-    } else if (n >= 10) {
-      output += (output ? " " : "") + (n === 10 ? "DIEZ" : especiales[n - 10]);
-      n = 0;
-    } else if (n > 0) {
-      output += (output ? " " : "") + unidades[n];
-      n = 0;
-    }
-    return output;
-  }
-
-  function splitNumber(num) {
-    const parts = num.toString().split('.');
-    const wholePart = parseInt(parts[0], 10);
-    const fractionalPart = parts[1] ? parseInt(parts[1].padEnd(2, '0'), 10) : 0;
-    return [wholePart, fractionalPart];
-  }
-
-  const [wholePart, fractionalPart] = splitNumber(num);
-  const millones = Math.floor(wholePart / 1000000);
-  const miles = Math.floor((wholePart % 1000000) / 1000);
-  const centenasParte = wholePart % 1000;
-
-  let literal = "";
-
-  if (millones > 0) {
-    literal += convertGroup(millones) + " MILLON" + (millones > 1 ? "ES" : "");
-  }
-
-  if (miles > 0) {
-    literal += (literal ? " " : "") + convertGroup(miles) + " MIL";
-  }
-
-  if (centenasParte > 0) {
-    literal += (literal ? " " : "") + convertGroup(centenasParte);
-  }
-
-  if (literal === "") {
-    literal = "CERO";
-  }
-
-  if (fractionalPart > 0) {
-    literal += ` CON ${convertGroup(fractionalPart)} CENTAVOS`;
-  }
-
-  literal += " USD";
-
-  return literal;
 }
 
 function capturarDatosEmisor() {

@@ -1,37 +1,41 @@
 
-document.getElementById('add-detail').addEventListener('click', () => {
-    const tbody = document.getElementById('details-body');
-    const newRow = document.createElement('tr');
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('add-detail').addEventListener('click', () => {
+        const tbody = document.getElementById('details-body');
+        const newRow = document.createElement('tr');
 
-    newRow.innerHTML = `
-        <td><input type="number" value="0" class="qty" min="0"></td>
-        <td><input type="text" class="description" required></td>
-        <td><input type="number" value="0" class="price" min="0"></td>
-        <td><input type="number" value="0" readonly></td>
-        <td><input type="number" value="0" readonly></td>
-        <td><input type="number" value="0" class="total" readonly></td>
-        <td><button class="delete-row">Eliminar</button></td>
-    `;
+        newRow.innerHTML = `
+            <td><input type="number" value="0" class="form-control qty" min="0"></td>
+            <td><input type="text" class="form-control description" required></td>
+            <td><input type="number" value="0" class="form-control price" min="0"></td>
+            <td><input type="number" value="0" class="form-control" readonly></td>
+            <td><input type="number" value="0" class="form-control" readonly></td>
+            <td><input type="number" value="0" class="form-control total" readonly></td>
+            <td><button class="btn btn-danger delete-row">Eliminar</button></td>
+        `;
 
-    tbody.appendChild(newRow);
-});
+        tbody.appendChild(newRow);
+    });
 
-document.getElementById('details-body').addEventListener('input', (event) => {
-    if (event.target.classList.contains('qty') || event.target.classList.contains('price') || event.target.classList.contains('description')) {
-        validateInputs(event.target);
-        updateCalculations();
-    }
-});
+    document.getElementById('details-body').addEventListener('input', (event) => {
+        if (event.target.classList.contains('qty') || event.target.classList.contains('price') || event.target.classList.contains('description')) {
+            validateInputs(event.target);
+            updateCalculations();
+        }
+    });
 
-document.getElementById('details-body').addEventListener('click', (event) => {
-    if (event.target.classList.contains('delete-row')) {
-        event.target.closest('tr').remove();
-        updateCalculations();
-    }
-});
+    document.getElementById('details-body').addEventListener('click', (event) => {
+        if (event.target.classList.contains('delete-row')) {
+            event.target.closest('tr').remove();
+            updateCalculations();
+        }
+    });
 
-document.getElementById('export-csv').addEventListener('click', () => {
-    exportToCSV();
+    document.getElementById('export-csv').addEventListener('click', () => {
+        exportToCSV();
+    });
+
+   
 });
 
 function validateInputs(input) {
@@ -221,6 +225,77 @@ function calcularResumen(detalles) {
         numPagoElectronico: null, // Adjust as needed
     };
 }
+
+function convertirNumeroALetras(num) {
+    const unidades = ["", "UNO", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"];
+    const decenas = ["", "DIEZ", "VEINTE", "TREINTA", "CUARENTA", "CINCUENTA", "SESENTA", "SETENTA", "OCHENTA", "NOVENTA"];
+    const centenasArray = ["", "CIEN", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS", "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS"];
+    const especiales = ["", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE"];
+    const especiales2 = ["", "VEINTIUNO", "VEINTIDOS", "VEINTITRES", "VEINTICUATRO", "VEINTICINCO", "VEINTISEIS", "VEINTISIETE", "VEINTIOCHO", "VEINTINUEVE"];
+  
+    function convertGroup(n) {
+      let output = "";
+      if (n === 100) {
+        return "CIEN";
+      } else if (n < 1000) {
+        output += centenasArray[Math.floor(n / 100)];
+        n = n % 100;
+      }
+  
+      if (n >= 30) {
+        output += (output ? " " : "") + decenas[Math.floor(n / 10)];
+        n = n % 10;
+      } else if (n >= 20) {
+        output += (output ? " " : "") + (n === 20 ? "VEINTE" : especiales2[n - 20]);
+        n = 0;
+      } else if (n >= 10) {
+        output += (output ? " " : "") + (n === 10 ? "DIEZ" : especiales[n - 10]);
+        n = 0;
+      } else if (n > 0) {
+        output += (output ? " " : "") + unidades[n];
+        n = 0;
+      }
+      return output;
+    }
+  
+    function splitNumber(num) {
+      const parts = num.toString().split('.');
+      const wholePart = parseInt(parts[0], 10);
+      const fractionalPart = parts[1] ? parseInt(parts[1].padEnd(2, '0'), 10) : 0;
+      return [wholePart, fractionalPart];
+    }
+  
+    const [wholePart, fractionalPart] = splitNumber(num);
+    const millones = Math.floor(wholePart / 1000000);
+    const miles = Math.floor((wholePart % 1000000) / 1000);
+    const centenasParte = wholePart % 1000;
+  
+    let literal = "";
+  
+    if (millones > 0) {
+      literal += convertGroup(millones) + " MILLON" + (millones > 1 ? "ES" : "");
+    }
+  
+    if (miles > 0) {
+      literal += (literal ? " " : "") + convertGroup(miles) + " MIL";
+    }
+  
+    if (centenasParte > 0) {
+      literal += (literal ? " " : "") + convertGroup(centenasParte);
+    }
+  
+    if (literal === "") {
+      literal = "CERO";
+    }
+  
+    if (fractionalPart > 0) {
+      literal += ` CON ${convertGroup(fractionalPart)} CENTAVOS`;
+    }
+  
+    literal += " USD";
+  
+    return literal;
+  }
 
 // Uso de los datos capturados
 document.getElementById('save-json').addEventListener('click', () => {

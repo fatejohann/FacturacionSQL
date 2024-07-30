@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/estiloInicio.css">
-   
+
 </head>
 
 <body>
@@ -28,7 +28,8 @@
                     <button class="btn btn-link nav-link" onclick="showSection('tokenSection')">Token</button>
                 </li>
                 <li class="nav-item">
-                    <button class="btn btn-link nav-link" onclick="showSection('TiposdeDocumentoSection')">Tipos de Documento</button>
+                    <button class="btn btn-link nav-link" onclick="showSection('TiposdeDocumentoSection')">Tipos de
+                        Documento</button>
                 </li>
                 <li class="nav-item">
                     <button class="btn btn-link nav-link" onclick="showSection('emisorSection')">Emisor</button>
@@ -45,7 +46,7 @@
                 <li class="nav-item">
                     <button class="btn btn-link nav-link" onclick="showToken()">Eventos de validacion</button>
                 </li>
-                
+
             </ul>
             <!-- "Historiales" en el lado derecho -->
             <div class="navbar-nav">
@@ -71,332 +72,341 @@
             </div>
         </div>
 
-    <div class="container mt-5">
-        <div class="section" id="tokenSection" style="display: block;">
+        <div class="container mt-5">
+            <div class="section" id="tokenSection" style="display: block;">
+                <div class="container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Autenticación de Token</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="tokenForm">
+                                <div class="form-group row">
+                                    <label for="nit" class="col-sm-3 col-form-label">NIT:</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="nit" name="nit">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="password" class="col-sm-3 col-form-label">Contraseña:</label>
+                                    <div class="col-sm-9">
+                                        <input type="password" class="form-control" id="password" name="password">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-9 offset-sm-3">
+                                        <button type="submit" class="btn btn-primary">Enviar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container mt-5">
+                    <!-- Sección para mostrar el último token -->
+                    <div class="section" id="lastTokenSection" style="display:block;">
+                        <h2>Último Token:</h2>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha de Generación</th>
+                                        <th>Estado</th>
+                                        <th>Token</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lastTokenTableBody">
+                                    <!-- Los datos del último token se insertarán aquí -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <p id="tokenStatus"></p>
+                        <!-- Este párrafo mostrará el estado del token -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="TiposdeDocumentoSection" style="display: none;">
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title">Autenticación de Token</h5>
+                        <h5 class="card-title">Tipos de Documento</h5>
                     </div>
                     <div class="card-body">
-                        <form id="tokenForm">
+                        <div class="form-group">
+                            <label for="documentType">Seleccione un tipo de documento:</label>
+                            <select class="form-control" id="documentType">
+                                <option value="FE">Factura Electrónica</option>
+                                <option value="CCF">Comprobante de Crédito Fiscal</option>
+                                <option value="NRE">Nota de Remisión Electrónica</option>
+                                <option value="NCE">Nota de Crédito Electrónico</option>
+                                <option value="NDE">Nota de Débito Electrónico</option>
+                                <option value="CRE">Comprobante de Retención Electrónico</option>
+                                <option value="CLE">Comprobante de Liquidación Electrónico</option>
+                                <option value="DCLE">Documento Contable de Liquidación Electrónico</option>
+                                <option value="FEE">Factura de Exportación Electrónica</option>
+                                <option value="FSEE">Factura de Sujeto Excluido Electrónica</option>
+                                <option value="CDE">Comprobante de Donación Electrónico</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección del formulario de Emisor -->
+        <div class="section" id="emisorSection" style="display: none;">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Datos del Emisor</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Select para emisores -->
+                        <div class="form-group">
+                            <label for="emisorSelect">Seleccionar Emisor</label>
+                            <select class="form-control" id="emisorSelect">
+                                <option value="" disabled selected>Seleccionar Emisor</option>
+                                <!-- Opciones se llenarán dinámicamente -->
+                            </select>
+                        </div>
+
+                        <!-- Formulario de Registro de Emisor -->
+                        <form id="emisorForm">
                             <div class="form-group row">
-                                <label for="nit" class="col-sm-3 col-form-label">NIT:</label>
+                                <label for="razonSocial" class="col-sm-3 col-form-label">Razón Social</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="nit" name="nit">
+                                    <input type="text" class="form-control" id="razonSocial" required>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="password" class="col-sm-3 col-form-label">Contraseña:</label>
+                                <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
                                 <div class="col-sm-9">
-                                    <input type="password" class="form-control" id="password" name="password">
+                                    <input type="text" class="form-control" id="nombreComercial">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-sm-9 offset-sm-3">
-                                    <button type="submit" class="btn btn-primary">Enviar</button>
+                                <label for="nitEmisor" class="col-sm-3 col-form-label">NIT</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nitEmisor" required>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nrc" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="telefono" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="correo" class="col-sm-3 col-form-label">Correo Electrónico</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="correo" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="departamentoEmisor" class="col-sm-3 col-form-label">Departamento</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="departamentoEmisorInicio" required>
+                                        <!-- Opciones de departamento se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="municipioEmisor" class="col-sm-3 col-form-label">Municipio</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="municipioEmisorInicio" required>
+                                        <!-- Opciones de municipio se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="direccion" class="col-sm-3 col-form-label">Complemento de Dirección</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="direccion" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="giroComercial" class="col-sm-3 col-form-label">Giro Comercial</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="giroComercialInicio" required>
+                                        <!-- Opciones de giros comerciales se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="tipoEstablecimiento" class="col-sm-3 col-form-label">Tipo de
+                                    Establecimiento</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="tipoEstablecimiento" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registrar Emisor</button>
                         </form>
                     </div>
                 </div>
             </div>
-            
-            <div class="container mt-5">
-                <!-- Sección para mostrar el último token -->
-                <div class="section" id="lastTokenSection" style="display:block;">
-                    <h2>Último Token:</h2>
+        </div>
+
+        <div class="section" id="receptorSection" style="display: none;">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Datos del Receptor</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Select para emisores -->
+                        <div class="form-group">
+                            <label for="receptorSelect">Seleccionar receptor</label>
+                            <select class="form-control" id="receptorSelect">
+                                <option value="" disabled selected>Seleccionar receptor</option>
+                                <!-- Opciones se llenarán dinámicamente -->
+                            </select>
+                        </div>
+                        <form id="receptorForm">
+                            <div class="form-group row">
+                                <label for="NombreCliente" class="col-sm-3 col-form-label">Nombre</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="NombreCliente" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="nombreComercialReceptor" class="col-sm-3 col-form-label">Nombre
+                                    Comercial</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nombreComercialReceptor" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="nitReceptor" class="col-sm-3 col-form-label">NIT</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nitReceptor" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="nrcReceptor" class="col-sm-3 col-form-label">NRC</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="nrcReceptor" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="telefonoReceptor" class="col-sm-3 col-form-label">Teléfono</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="telefonoReceptor" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="giroComercial" class="col-sm-3 col-form-label">Giro Comercial</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="giroComercialReceptor" required>
+                                        <!-- Opciones de giros comerciales se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="correoReceptor" class="col-sm-3 col-form-label">Correo Electrónico</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" id="correoReceptor" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="departamentoReceptor" class="col-sm-3 col-form-label">Departamento</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="departamentoReceptor" required>
+                                        <!-- Opciones de departamento se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="municipioReceptor" class="col-sm-3 col-form-label">Municipio</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="municipioReceptor" required>
+                                        <!-- Opciones de municipio se llenarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="direccionReceptor" class="col-sm-3 col-form-label">Complemento de
+                                    Dirección</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" id="direccionReceptor" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registrar Receptor</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="detallesSection" style="display: none;">
+            <div class="container">
+                <h1 class="my-4">Descripción</h1>
+                <div class="mb-3">
+                    <button id="add-detail" class="btn btn-primary">Agregar detalle</button>
+                    <button id="export-csv" class="btn btn-secondary">Exportar a CSV</button>
+                    <button id="save-json" class="btn btn-success">Guardar JSON</button> <!-- Nuevo botón -->
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Cant</th>
+                                <th>Descripción</th>
+                                <th>Precio Unitario</th>
+                                <th>Ventas No Sujetas</th>
+                                <th>Ventas Excentas</th>
+                                <th>Ventas Afectas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="details-body">
+                            <tr>
+                                <td><input type="number" value="0" class="form-control qty" min="0"></td>
+                                <td><input type="text" class="form-control description" required></td>
+                                <td><input type="number" value="0" class="form-control price" min="0"></td>
+                                <td><input type="number" value="0" class="form-control" readonly></td>
+                                <td><input type="number" value="0" class="form-control" readonly></td>
+                                <td><input type="number" value="0" class="form-control total" readonly></td>
+                                <td><button class="btn btn-danger delete-row">Eliminar</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="summary mt-4">
+                    <p class="font-weight-bold">SUMAS</p>
                     <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-dark">
                                 <tr>
-                                    <th>Fecha de Generación</th>
-                                    <th>Estado</th>
-                                    <th>Token</th>
+                                    <th></th>
+                                    <th>Venta Exenta</th>
+                                    <th>Venta no Sujeta</th>
+                                    <th>Venta Gravada</th>
                                 </tr>
                             </thead>
-                            <tbody id="lastTokenTableBody">
-                                <!-- Los datos del último token se insertarán aquí -->
+                            <tbody>
+                                <!-- Sumas se agregarán aquí -->
                             </tbody>
                         </table>
                     </div>
-                    <p id="tokenStatus"></p>
-                    <!-- Este párrafo mostrará el estado del token -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section" id="TiposdeDocumentoSection" style="display: none;">
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Tipos de Documento</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="documentType">Seleccione un tipo de documento:</label>
-                        <select class="form-control" id="documentType">
-                            <option value="FE">Factura Electrónica</option>
-                            <option value="CCF">Comprobante de Crédito Fiscal</option>
-                            <option value="NRE">Nota de Remisión Electrónica</option>
-                            <option value="NCE">Nota de Crédito Electrónico</option>
-                            <option value="NDE">Nota de Débito Electrónico</option>
-                            <option value="CRE">Comprobante de Retención Electrónico</option>
-                            <option value="CLE">Comprobante de Liquidación Electrónico</option>
-                            <option value="DCLE">Documento Contable de Liquidación Electrónico</option>
-                            <option value="FEE">Factura de Exportación Electrónica</option>
-                            <option value="FSEE">Factura de Sujeto Excluido Electrónica</option>
-                            <option value="CDE">Comprobante de Donación Electrónico</option>
-                        </select>
-                        <div class="form-group row">
-                            <div class="col-sm-9 offset-sm-3">
-                                <button type="button" class="btn btn-primary" id="submitDocumentButton">Enviar
-                                    documento</button>
-                            </div>
+                    <div class="form-group row">
+                        <div class="col-sm-9 offset-sm-3">
+                            <button type="button" class="btn btn-primary" id="submitDocumentButton">Enviar
+                                documento</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-<!-- Sección del formulario de Emisor -->
-<div class="section" id="emisorSection" style="display: none;">
-    <div class="container">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title">Datos del Emisor</h5>
-            </div>
-            <div class="card-body">
-                <!-- Select para emisores -->
-                <div class="form-group">
-                    <label for="emisorSelect">Seleccionar Emisor</label>
-                    <select class="form-control" id="emisorSelect">
-                        <option value="" disabled selected>Seleccionar Emisor</option>
-                        <!-- Opciones se llenarán dinámicamente -->
-                    </select>
-                </div>
-
-                <!-- Formulario de Registro de Emisor -->
-                <form id="emisorForm">
-                    <div class="form-group row">
-                        <label for="razonSocial" class="col-sm-3 col-form-label">Razón Social</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="razonSocial" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="nombreComercial" class="col-sm-3 col-form-label">Nombre Comercial</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="nombreComercial" >
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="nitEmisor" class="col-sm-3 col-form-label">NIT</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="nitEmisor" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="nrc" class="col-sm-3 col-form-label">NRC</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="nrc" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="telefono" class="col-sm-3 col-form-label">Teléfono</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="telefono" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="correo" class="col-sm-3 col-form-label">Correo Electrónico</label>
-                        <div class="col-sm-9">
-                            <input type="email" class="form-control" id="correo" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="departamentoEmisor" class="col-sm-3 col-form-label">Departamento</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="departamentoEmisorInicio" required>
-                                <!-- Opciones de departamento se llenarán dinámicamente -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="municipioEmisor" class="col-sm-3 col-form-label">Municipio</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="municipioEmisorInicio" required>
-                                <!-- Opciones de municipio se llenarán dinámicamente -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="direccion" class="col-sm-3 col-form-label">Complemento de Dirección</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="direccion" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="giroComercial" class="col-sm-3 col-form-label">Giro Comercial</label>
-                        <div class="col-sm-9">
-                            <select class="form-control" id="giroComercialInicio" required>
-                                <!-- Opciones de giros comerciales se llenarán dinámicamente -->
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="tipoEstablecimiento" class="col-sm-3 col-form-label">Tipo de Establecimiento</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="tipoEstablecimiento" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Registrar Emisor</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="section" id="receptorSection" style="display: none;">
-        <div class="container">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title">Datos del Receptor</h5>
-                </div>
-                <div class="card-body">
-                    <!-- Select para emisores -->
-                <div class="form-group">
-                    <label for="receptorSelect">Seleccionar receptor</label>
-                    <select class="form-control" id="receptorSelect">
-                        <option value="" disabled selected>Seleccionar receptor</option>
-                        <!-- Opciones se llenarán dinámicamente -->
-                    </select>
-                </div>
-                    <form id="receptorForm">
-                        <div class="form-group row">
-                            <label for="NombreCliente" class="col-sm-3 col-form-label">Nombre</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="NombreCliente" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="nombreComercialReceptor" class="col-sm-3 col-form-label">Nombre Comercial</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nombreComercialReceptor" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="nitReceptor" class="col-sm-3 col-form-label">NIT</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nitReceptor" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="nrcReceptor" class="col-sm-3 col-form-label">NRC</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="nrcReceptor" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="telefonoReceptor" class="col-sm-3 col-form-label">Teléfono</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="telefonoReceptor" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="giroComercial" class="col-sm-3 col-form-label">Giro Comercial</label>
-                            <div class="col-sm-9">
-                                <select class="form-control" id="giroComercialReceptor" required>
-                                    <!-- Opciones de giros comerciales se llenarán dinámicamente -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="correoReceptor" class="col-sm-3 col-form-label">Correo Electrónico</label>
-                            <div class="col-sm-9">
-                                <input type="email" class="form-control" id="correoReceptor" required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="departamentoReceptor" class="col-sm-3 col-form-label">Departamento</label>
-                            <div class="col-sm-9">
-                                <select class="form-control" id="departamentoReceptor" required>
-                                    <!-- Opciones de departamento se llenarán dinámicamente -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="municipioReceptor" class="col-sm-3 col-form-label">Municipio</label>
-                            <div class="col-sm-9">
-                                <select class="form-control" id="municipioReceptor" required>
-                                    <!-- Opciones de municipio se llenarán dinámicamente -->
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="direccionReceptor" class="col-sm-3 col-form-label">Complemento de Dirección</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" id="direccionReceptor" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registrar Receptor</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section" id="detallesSection" style="display: none;">
-        <div class="container">
-            <h1>Descripción</h1>
-            <button id="add-detail">Agregar detalle</button>
-            <button id="export-csv">Exportar a CSV</button>
-            <button id="save-json">Guardar JSON</button> <!-- Nuevo botón -->
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cant</th>
-                        <th>Descripción</th>
-                        <th>Precio Unitario</th>
-                        <th>Ventas No Sujetas</th>
-                        <th>Ventas Excentas</th>
-                        <th>Ventas Afectas</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="details-body">
-                    <tr>
-                        <td><input type="number" value="0" class="qty" min="0"></td>
-                        <td><input type="text" class="description" required></td>
-                        <td><input type="number" value="0" class="price" min="0"></td>
-                        <td><input type="number" value="0" readonly></td>
-                        <td><input type="number" value="0" readonly></td>
-                        <td><input type="number" value="0" class="total" readonly></td>
-                        <td><button class="delete-row">Eliminar</button></td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="summary">
-                <p>SUMAS</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Venta Exenta</th>
-                            <th>Venta no Sujeta</th>
-                            <th>Venta Gravada</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Sumas se agregarán aquí -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="js/formulariosInicio.js"></script>
     <script src="js/factura.js"></script>
