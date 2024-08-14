@@ -43,27 +43,26 @@
         </div>
     </nav>
 
-    <!-- Sección del historial de Token -->
-    <div id="H.TokenSection" class="container mt-5">
-        <h1 class="mb-4">Historial de Tokens</h1>
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm">
-                <thead class="thead-dark">
-                    <tr>
-                        <th scope="col">Fecha de Generación</th>
-                        <th scope="col">Token Actual</th>
-                    </tr>
-                </thead>
-                <tbody id="TokenTableBody">
-                    <!-- Las filas se llenarán dinámicamente aquí -->
-                </tbody>
-            </table>
-        </div>
+   <!-- Sección del historial de Token -->
+<div id="H.TokenSection" class="container mt-5 section ">
+    <h1 class="mb-4">Historial de Tokens</h1>
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Fecha de Generación</th>
+                    <th scope="col">Token Actual</th>
+                </tr>
+            </thead>
+            <tbody id="TokenTableBody">
+                <!-- Las filas se llenarán dinámicamente aquí -->
+            </tbody>
+        </table>
     </div>
-
+</div>
 
 <!-- Sección del historial de DTE -->
-<div id="H.TiposDocumentoSection" style="display: none;">
+<div id="H.TiposDocumentoSection" class="container mt-5 section hidden">
     <div class="container text-center mt-5">
         <h1 class="mb-4">Historial de Documentos</h1>
         <div class="table-responsive">
@@ -72,7 +71,6 @@
                     <tr>
                         <th scope="col">Fecha de Creación</th>
                         <th scope="col">Fecha de Recibido</th>
-                        <th scope="col">Sello de Recibido</th>
                         <th scope="col">Tipo de DTE</th>
                         <th scope="col">Operaciones</th>
                     </tr>
@@ -85,9 +83,8 @@
     </div>
 </div>
 
-<!-- Sección del historial de Receptor -->
 <!-- Sección del historial de Clientes -->
-<div id="H.ClienteSection" class="container mt-5 hidden">
+<div id="H.ClienteSection" class="container mt-5 section hidden">
     <h1 class="mb-4">Historial de Clientes</h1>
     <div class="table-responsive">
         <table class="table table-bordered table-sm">
@@ -113,9 +110,8 @@
     </div>
 </div>
 
-
 <!-- Sección del historial de Emisor -->
-<div id="H.EmisorSection" class="container mt-5 hidden">
+<div id="H.EmisorSection" class="container mt-5 section hidden">
     <h1 class="mb-4">Historial de Emisores</h1>
     <div class="table-responsive">
         <table class="table table-bordered table-sm">
@@ -129,7 +125,6 @@
                     <th scope="col">Municipio</th>
                     <th scope="col">Dirección</th>
                     <th scope="col">Giro Comercial</th>
-
                     <th scope="col">Acciones</th>
                 </tr>
             </thead>
@@ -139,6 +134,7 @@
         </table>
     </div>
 </div>
+
    
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="js/historiales.js"></script>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -57,7 +57,7 @@
             </div>
         </div>
     </nav>
-
+    
     <div class="container mt-5">
         <div class="row">
             <div class="col">
@@ -348,12 +348,18 @@
 
         <div class="section" id="detallesSection" style="display: none;">
             <div class="container">
+                
                 <h1 class="my-4">Descripción</h1>
                 <div class="mb-3">
                     <button id="add-detail" class="btn btn-primary">Agregar detalle</button>
                     <button id="export-csv" class="btn btn-secondary">Exportar a CSV</button>
                     <button id="save-json" class="btn btn-success">Guardar JSON</button> <!-- Nuevo botón -->
                 </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="includeIvaCheckbox">
+                    <label class="form-check-label" for="includeIvaCheckbox">¿Precio incluye IVA?</label>
+                </div>
+                
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped">
                         <thead class="thead-dark">

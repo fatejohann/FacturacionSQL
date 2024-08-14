@@ -1,4 +1,5 @@
 
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-detail').addEventListener('click', () => {
         const tbody = document.getElementById('details-body');
@@ -16,6 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         tbody.appendChild(newRow);
     });
+    
+    document.getElementById('includeIvaCheckbox').addEventListener('change', updateCalculations);
+document.querySelectorAll('.qty, .price').forEach(input => {
+    input.addEventListener('input', updateCalculations);
+});
 
     document.getElementById('details-body').addEventListener('input', (event) => {
         if (event.target.classList.contains('qty') || event.target.classList.contains('price') || event.target.classList.contains('description')) {
@@ -54,14 +60,40 @@ function validateInputs(input) {
     }
 }
 
+function exportToCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    const rows = document.querySelectorAll('table tr');
+    
+    rows.forEach(row => {
+        let rowContent = [];
+        row.querySelectorAll('td, th').forEach(cell => {
+            rowContent.push(cell.innerText);
+        });
+        csvContent += rowContent.join(",") + "\r\n";
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "detalles_productos.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 function updateCalculations() {
     const rows = document.querySelectorAll('#details-body tr');
     let totalGravada = 0;
+    const includeIva = document.getElementById('includeIvaCheckbox').checked;
 
     rows.forEach(row => {
         const qty = row.querySelector('.qty').valueAsNumber;
         const price = row.querySelector('.price').valueAsNumber;
-        const total = (qty > 0 && price > 0) ? qty * price : 0;
+        let total = (qty > 0 && price > 0) ? qty * price : 0;
+
+        if (includeIva) {
+            total = total / 1.13;  // Elimina el IVA del total si ya estaba incluido
+        }
 
         row.querySelector('.total').value = total.toFixed(2);
         totalGravada += total;
@@ -116,26 +148,6 @@ function updateCalculations() {
     `;
 }
 
-function exportToCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,";
-    const rows = document.querySelectorAll('table tr');
-    
-    rows.forEach(row => {
-        let rowContent = [];
-        row.querySelectorAll('td, th').forEach(cell => {
-            rowContent.push(cell.innerText);
-        });
-        csvContent += rowContent.join(",") + "\r\n";
-    });
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "detalles_productos.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
 
 // Nueva función para capturar los datos de los detalles
 function capturarDatosDetalles() {
@@ -301,10 +313,14 @@ function convertirNumeroALetras(num) {
 document.getElementById('save-json').addEventListener('click', () => {
     const documentoSeleccionado = document.getElementById("documentType").value;
         let facturaJson = cargarFactura(documentoSeleccionado);
-    const detalles = capturarDatosDetalles();
-    facturaJson.dteJson.cuerpoDocumento = detalles;
+    // Capturar y actualizar datos de Detalles
+ const detalles = capturarDatosDetalles();
+ facturaJson.dteJson.cuerpoDocumento = detalles;
 
-    // Otras operaciones necesarias con facturaJson
+ // Calcular el resumen y actualizar en el JSON
+ const resumen = calcularResumen(detalles);
+ facturaJson.dteJson.resumen = resumen;
+    
 
     console.log(facturaJson);
 });

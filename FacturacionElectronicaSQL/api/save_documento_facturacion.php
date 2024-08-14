@@ -54,8 +54,10 @@ $totalNoGravado = $data['totalNoGravado'] ?? 0;
 $totalPagar = $data['totalPagar'] ?? 0;
 $totalLetras = $data['totalLetras'] ?? '';
 $totalIva = $data['totalIva'] ?? 0;
+$tipoDte = $data['tipoDte'] ?? '';
 
-$sql = "INSERT INTO t_documento_facturacion (noDocumento, fechaDocumento, horaDocumento, idEstadoDocumento, idCliente, totalVentasExentas, totalVentasNoSujetas, totalVentasGravadas, ivaDocumento, retencionIVA, totalDocumento, numeroControl, codigoGeneracion, clasificacionMsg, codigoMsg, descripcionMsg, idArchivoJson, idArchivoPDF, idTipoPago, idPlazoPago, idLote, idBodegaSucursal, idUsuario, subTotalVentas, descuentoNoSujetas, descuentoExentas, descuentoGravadas, porcentajeDescuento, totalDescuentos, subTotal, ivaPercibido, retencionRenta, montoTotalOperacion, totalNoGravado, totalPagar, totalLetras, totalIva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+$sql = "INSERT INTO t_documento_facturacion (noDocumento, fechaDocumento, horaDocumento, idEstadoDocumento, idCliente, totalVentasExentas, totalVentasNoSujetas, totalVentasGravadas, ivaDocumento, retencionIVA, totalDocumento, numeroControl, codigoGeneracion, clasificacionMsg, codigoMsg, descripcionMsg, idArchivoJson, idArchivoPDF, idTipoPago, idPlazoPago, idLote, idBodegaSucursal, idUsuario, subTotalVentas, descuentoNoSujetas, descuentoExentas, descuentoGravadas, porcentajeDescuento, totalDescuentos, subTotal, ivaPercibido, retencionRenta, montoTotalOperacion, totalNoGravado, totalPagar, totalLetras, totalIva,tipoDte) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $connection->prepare($sql);
 if ($stmt === false) {
@@ -66,11 +68,10 @@ if ($stmt === false) {
 }
 
 try {
-    $stmt->bind_param("sssiiddddddsssssiiiiiiiddddddddddddsd", $noDocumento, $fechaDocumento, $horaDocumento, $idEstadoDocumento, $idCliente, $totalVentasExentas, $totalVentasNoSujetas, $totalVentasGravadas, $ivaDocumento, $retencionIVA, $totalDocumento, $numeroControl, $codigoGeneracion, $clasificacionMsg, $codigoMsg, $descripcionMsg, $idArchivoJson, $idArchivoPDF, $idTipoPago, $idPlazoPago, $idLote, $idBodegaSucursal, $idUsuario, $subTotalVentas, $descuentoNoSujetas, $descuentoExentas, $descuentoGravadas, $porcentajeDescuento, $totalDescuentos, $subTotal, $ivaPercibido, $retencionRenta, $montoTotalOperacion, $totalNoGravado, $totalPagar, $totalLetras, $totalIva);
+    $stmt->bind_param("sssiiddddddsssssiiiiiiiddddddddddddsds", $noDocumento, $fechaDocumento, $horaDocumento, $idEstadoDocumento, $idCliente, $totalVentasExentas, $totalVentasNoSujetas, $totalVentasGravadas, $ivaDocumento, $retencionIVA, $totalDocumento, $numeroControl, $codigoGeneracion, $clasificacionMsg, $codigoMsg, $descripcionMsg, $idArchivoJson, $idArchivoPDF, $idTipoPago, $idPlazoPago, $idLote, $idBodegaSucursal, $idUsuario, $subTotalVentas, $descuentoNoSujetas, $descuentoExentas, $descuentoGravadas, $porcentajeDescuento, $totalDescuentos, $subTotal, $ivaPercibido, $retencionRenta, $montoTotalOperacion, $totalNoGravado, $totalPagar, $totalLetras, $totalIva,$tipoDte);
 } catch (\Throwable $th) {
     throw $th;
 }
-//$stmt->bind_param("sssiiiiiddddssssiiiiiddiddddddssssdd", $noDocumento, $fechaDocumento, $horaDocumento, $idEstadoDocumento, $idCliente, $totalVentasExentas, $totalVentasNoSujetas, $totalVentasGravadas, $ivaDocumento, $retencionIVA, $totalDocumento, $numeroControl, $codigoGeneracion, $clasificacionMsg, $codigoMsg, $descripcionMsg, $idArchivoJson, $idArchivoPDF, $idTipoPago, $idPlazoPago, $idLote, $idBodegaSucursal, $idUsuario, $subTotalVentas, $descuentoNoSujetas, $descuentoExentas, $descuentoGravadas, $porcentajeDescuento, $totalDescuentos, $subTotal, $ivaPercibido, $retencionRenta, $montoTotalOperacion, $totalNoGravado, $totalPagar, $totalLetras, $totalIva);
 
 if ($stmt->execute()) {
     echo json_encode(["message" => "Documento de facturación guardado exitosamente"]);

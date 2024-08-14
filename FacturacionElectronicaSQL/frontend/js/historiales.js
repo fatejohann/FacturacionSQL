@@ -54,7 +54,6 @@ async function getTokens() {
     }
 }
 
-
 // Función para obtener y mostrar el historial de emisores
 async function getEmisor() {
     let response;
@@ -75,9 +74,9 @@ async function getEmisor() {
                 <td>${emisor.nrc}</td>
                 <td>${emisor.telefono}</td>
                 <td>${emisor.correoElectronico}</td>
-                <td>${emisor.idMunicipio}</td>
+                <td>${emisor.municipio}</td>
                 <td>${emisor.direccion}</td>
-                <td>${emisor.idGiroComercial}</td>
+                <td>${emisor.giroComercial}</td>
                 <td class="text-center">
                     <button class="btn btn-danger" onclick="eliminarEmisor(${emisor.id})">Eliminar</button>
                 </td>
@@ -147,7 +146,6 @@ async function getClientes() {
     }
 }
 
-
 // Función para eliminar un cliente
 async function eliminarCliente(id) {
     if (confirm('¿Estás seguro de que deseas eliminar este cliente?')) {
@@ -171,75 +169,74 @@ async function eliminarCliente(id) {
     }
 }
 
+ // Función para cargar el historial de DTE
+async function cargarHistorialDTE() {
+    try {
+        console.log("Cargando historial de DTE...");
+        const response = await fetch("../api/get_dte_history.php");
+        if (!response.ok) {
+            throw new Error("Error al obtener el historial de DTE");
+        }
+        const dteHistory = await response.json();
+        console.log("Historial de DTE obtenido:", dteHistory);
 
+        const tableBody = document.getElementById("dteHistoryTableBody");
+        tableBody.innerHTML = "";
 
-//historial de dte
-// Función para obtener el historial de tipos de DTE de Google Sheets
-async function getDteHistory() {
-  console.log('Llamando a la función getDteHistory...');
-  let response;
-  try {
-      response = await gapi.client.sheets.spreadsheets.values.get({
-          spreadsheetId: '1J__Pzj8RNIrwlojeF-mjBdWYtt9GH3QH3Je5SamLfSI',
-          range: 'h.TiposDeDocumento!A:G', // Ajusta el rango según sea necesario
-      });
-      console.log('Datos de tipos de DTE obtenidos:', response);
-  } catch (err) {
-      console.error('The API returned an error: ' + err);
-      return;
-  }
+        dteHistory.forEach(row => {
+            const tr = document.createElement("tr");
 
-  const rows = response.result.values;
-  if (rows.length > 0) {
-      const tableBody = document.getElementById('dteHistoryTableBody');
-      tableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla antes de agregar nuevos datos
+            const fechaDocumentoTd = document.createElement("td");
+            fechaDocumentoTd.textContent = row.fechaDocumento;
+            tr.appendChild(fechaDocumentoTd);
 
-      // Saltarse la primera fila si contiene los encabezados de las columnas.
-      rows.slice(1).forEach((row) => {
-          const tr = `<tr>
-                        <td>${row[0]}</td> <!-- Fecha de Creación -->  
-                        <td>${row[4]}</td> <!-- Fecha de Recibido -->
-                        <td>${row[2]}</td> <!-- Sello de Recibido -->
-                        <td>${row[5]}</td> <!-- Tipo de DTE -->
-                        <td>
-                          <button class="btn btn-dark" onclick="obtenerPdfHacienda('${lastToken}', '${row[3]}')">Obtener PDF</button> <!-- Código de Generación -->
-                        </td>
-                      </tr>`;
-          tableBody.innerHTML += tr;
-      });
-      document.getElementById("H.TiposDocumentoSection").style.display = "block"; // Mostrar la sección
-      console.log('Datos de tipos de DTE mostrados en la tabla.');
-  } else {
-      document.getElementById('H.TiposDocumentoSection').innerHTML = '<p>No se encontraron datos.</p>';
-      console.log('No se encontraron datos de tipos de DTE.');
-  }
+            const estadoDocumentoTd = document.createElement("td");
+            estadoDocumentoTd.textContent = row.estadoDocumento; 
+            tr.appendChild(estadoDocumentoTd);
+
+            const tipoDteTd = document.createElement("td");
+            tipoDteTd.textContent = row.tipoDte;
+            tr.appendChild(tipoDteTd);
+
+            const operacionesTd = document.createElement("td");
+            const obtenerPdfButton = document.createElement("button");
+            obtenerPdfButton.className = "btn btn-dark";
+            obtenerPdfButton.textContent = "Obtener PDF";
+            obtenerPdfButton.onclick = () => obtenerPdfHacienda(lastToken, row.codigoGeneracion);
+            operacionesTd.appendChild(obtenerPdfButton);
+            tr.appendChild(operacionesTd);
+
+            tableBody.appendChild(tr);
+        });
+    } catch (error) {
+        console.error("Error al cargar el historial de DTE:", error);
+    }
 }
+
 
 // Función para obtener el PDF de Hacienda
 async function obtenerPdfHacienda(lastToken, codGeneracion) {
-  try {
-      const url = `https://admin.factura.gob.sv/test/generardte/generar-pdf/descargar/base64/codigo-generacion/1/${codGeneracion}`;
-      const headers = {
-          'Authorization': lastToken
-      };
+    try {
+        const url = `https://admin.factura.gob.sv/test/generardte/generar-pdf/descargar/base64/codigo-generacion/1/${codGeneracion}`;
+        const headers = {
+            'Authorization': lastToken
+        };
 
-      const response = await axios.post(url, null, { headers });
-      if (response.status === 200) {
-          const pdfBase64 = response.data;
-          // Crear un enlace para descargar el PDF
-          const link = document.createElement('a');
-          link.href = `data:application/pdf;base64,${pdfBase64}`;
-          link.download = `${codGeneracion}.pdf`;
-          link.click();
-      } else {
-          console.error('Error al obtener el PDF:', response.status);
-      }
-  } catch (error) {
-      console.error('Error interno del servidor:', error.message);
-  }
+        const response = await axios.post(url, null, { headers });
+        if (response.status === 200) {
+            const pdfBase64 = response.data;
+            // Crear un enlace para descargar el PDF
+            const link = document.createElement('a');
+            link.href = `data:application/pdf;base64,${pdfBase64}`;
+            link.download = `${codGeneracion}.pdf`;
+            link.click();
+        } else {
+            console.error('Error al obtener el PDF:', response.status);
+        }
+    } catch (error) {
+        console.error('Error interno del servidor:', error.message);
+    }
 }
-
-
 
 // Funciones para mostrar las secciones correspondientes
 function showToken() {
@@ -250,7 +247,8 @@ function showToken() {
 
 function showTiposdeDocumento() {
     hideAllSections();
-    document.getElementById('H.TiposDeDocumentoSection').classList.remove('hidden');
+    document.getElementById('H.TiposDocumentoSection').classList.remove('hidden');
+    cargarHistorialDTE();
 }
 
 function showEmisor() {
@@ -265,9 +263,8 @@ function showClientes() {
     getClientes();
 }
 
-
 function hideAllSections() {
-    const sections = document.querySelectorAll('.container.mt-5');
+    const sections = document.querySelectorAll('.container.section');
     sections.forEach(section => {
         section.classList.add('hidden');
     });
