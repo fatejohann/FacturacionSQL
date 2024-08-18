@@ -1,6 +1,8 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
+documentoSeleccionado = document.getElementById("documentType").value;
+
     document.getElementById('add-detail').addEventListener('click', () => {
         const tbody = document.getElementById('details-body');
         const newRow = document.createElement('tr');
@@ -88,7 +90,7 @@ function updateCalculations() {
 
     rows.forEach(row => {
         const qty = row.querySelector('.qty').valueAsNumber;
-        const price = row.querySelector('.price').valueAsNumber;
+        const price = parseFloat(row.querySelector('.price').value);
         let total = (qty > 0 && price > 0) ? qty * price : 0;
 
         if (includeIva) {
@@ -105,8 +107,8 @@ function updateCalculations() {
     document.querySelector('.summary tbody').innerHTML = `
         <tr>
             <td>Sumas</td>
-            <td>0</td>
-            <td>0</td>
+            <td>0.00</td>
+            <td>0.00</td>
             <td>${totalGravada.toFixed(2)}</td>
         </tr>
         <tr>
@@ -125,13 +127,13 @@ function updateCalculations() {
             <td>VENTA EXENTA</td>
             <td></td>
             <td></td>
-            <td>0</td>
+            <td>0.00</td>
         </tr>
         <tr>
             <td>VENTA NO SUJETAS</td>
             <td></td>
             <td></td>
-            <td>0</td>
+            <td>0.00</td>
         </tr>
         <tr>
             <td>SUB TOTAL</td>
@@ -148,95 +150,159 @@ function updateCalculations() {
     `;
 }
 
-
-// Nueva función para capturar los datos de los detalles
-function capturarDatosDetalles() {
+function capturarDatosDetalles(documentoSeleccionado) {
     const rows = document.querySelectorAll('#details-body tr');
     const detalles = [];
+    const includeIva = document.getElementById('includeIvaCheckbox')?.checked || false;
 
     rows.forEach((row, index) => {
         const qty = row.querySelector('.qty').valueAsNumber;
         const description = row.querySelector('.description').value;
-        const price = row.querySelector('.price').valueAsNumber;
-        const total = row.querySelector('.total').valueAsNumber;
+        let price = parseFloat(row.querySelector('.price').value);
+        let total = parseFloat(row.querySelector('.total').value);
 
-        detalles.push({
+        // Redondear el precio y el total a dos decimales
+        price = Math.round(price * 100) / 100;
+        total = Math.round(total * 100) / 100;
+
+        // Calcular IVA y ventaGravada
+        let ivaItem = 0;
+        let ventaGravada = 0;
+        
+        if (includeIva) {
+            // Si el precio incluye IVA, calcular el precio sin IVA y el IVA
+            ventaGravada = Math.round(price * qty * 100) / 100;
+            ivaItem = Math.round(ventaGravada / 1.13 * 0.13 * 100) / 100;
+        } else {
+            ventaGravada = Math.round((price * qty) * 100) / 100;
+            ivaItem = Math.round(ventaGravada * 0.13 * 100) / 100;
+        }
+
+        // Crear el detalle
+        let detalle = {
             numItem: index + 1,
             tipoItem: 1,
             numeroDocumento: null,
-            codigo: "0",  // Este valor puede ser dinámico o estático según tu necesidad
-            codTributo: null,
+            codigo: "0",
             descripcion: description,
             cantidad: qty,
-            uniMedida: 59,  // Este valor puede ser dinámico o estático según tu necesidad
+            uniMedida: 59,
             precioUni: price,
             montoDescu: 0.0,
             ventaNoSuj: 0.0,
             ventaExenta: 0.0,
-            ventaGravada: total,
-            tributos: ["20"],  // Este valor puede ser dinámico o estático según tu necesidad
+            ventaGravada: ventaGravada,
             psv: 0.0,
             noGravado: 0.0,
-        });
+            tributos: [],
+            codTributo: "20",
+            ivaItem: ivaItem
+        };
+
+        // Ajustes según el tipo de documento
+        if (documentoSeleccionado === 'FE') {
+            detalle.tipoItem = 1;
+            detalle.tributos = null;
+            detalle.codTributo = null;
+            detalle.ivaItem = ivaItem;
+        } else if (documentoSeleccionado === 'CCF') {
+            detalle.tipoItem = 1;
+            detalle.tributos = [
+                     "20"
+            ];
+            detalle.codTributo = null;
+            delete detalle.ivaItem;
+            
+
+        } else if (documentoSeleccionado === 'OtroTipo') {
+            detalle.tipoItem = 1;
+            detalle.tributos = [];
+        }
+
+        detalles.push(detalle);
     });
 
     return detalles;
 }
 
-function calcularResumen(detalles) {
+function calcularResumen(detalles, documentoSeleccionado) {
     let totalNoSuj = 0.0;
     let totalExenta = 0.0;
     let totalGravada = 0.0;
     let subTotalVentas = 0.0;
     let totalDescu = 0.0;
     let valorIVA = 0.0;
-    const IVA_RATE = 0.13; // Assuming 13% IVA rate
+    let reteRenta = 0.0;
+    let totalIva = 0.0;
 
     detalles.forEach(detalle => {
         totalNoSuj += detalle.ventaNoSuj;
         totalExenta += detalle.ventaExenta;
         totalGravada += detalle.ventaGravada;
         totalDescu += detalle.montoDescu;
+
+        if (documentoSeleccionado === 'CCF') {
+            valorIVA += detalle.ivaItem;
+            reteRenta += detalle.ventaGravada * 0.10;
+        } else if (documentoSeleccionado === 'FE') {
+            totalIva += detalle.ivaItem;
+        }
     });
 
     subTotalVentas = totalNoSuj + totalExenta + totalGravada;
-    valorIVA = totalGravada * IVA_RATE;
 
     const subTotal = Math.round((subTotalVentas - totalDescu) * 100) / 100;
     const montoTotalOperacion = Math.round((subTotalVentas + valorIVA - totalDescu) * 100) / 100;
-    const totalPagar = Math.round((subTotalVentas + valorIVA - totalDescu) * 100) / 100;
+    const totalPagar = Math.round(totalGravada * 100) / 100;
 
-    return {
+    let resumen = {
         totalNoSuj: Math.round(totalNoSuj * 100) / 100,
         totalExenta: Math.round(totalExenta * 100) / 100,
         totalGravada: Math.round(totalGravada * 100) / 100,
         subTotalVentas: Math.round(subTotalVentas * 100) / 100,
-        descuNoSuj: 0.0, // Adjust as needed
-        descuExenta: 0.0, // Adjust as needed
+        descuNoSuj: 0.0,
+        descuExenta: 0.0,
         descuGravada: Math.round(totalDescu * 100) / 100,
-        porcentajeDescuento: 0.0, // Adjust as needed
+        porcentajeDescuento: 0.0,
         totalDescu: Math.round(totalDescu * 100) / 100,
-        tributos: [
+        tributos: null,
+        subTotal: subTotal,
+        ivaRete1: 0,
+        reteRenta: Math.round(reteRenta * 100) / 100,
+        montoTotalOperacion: montoTotalOperacion,
+        totalNoGravado: 0.0,
+        totalPagar: totalPagar,
+        totalLetras: convertirNumeroALetras(totalPagar),
+        saldoFavor: 0.0,
+        condicionOperacion: 1,
+        pagos: null,
+        numPagoElectronico: null,
+        totalIva: Math.round(totalIva * 100) / 100,
+    };
+
+    if (documentoSeleccionado === 'CCF') {
+        const ivaCalculado = Math.round(montoTotalOperacion * 0.13 * 100) / 100;
+        resumen.tributos = [
             {
                 codigo: "20",
                 descripcion: "Impuesto al Valor Agregado 13%",
-                valor: Math.round(valorIVA * 100) / 100,
+                valor: ivaCalculado,
             }
-        ],
-        subTotal: subTotal,
-        ivaPerci1: 0.0, // Adjust as needed
-        ivaRete1: 0.0, // Adjust as needed
-        reteRenta: 0.0, // Adjust as needed
-        montoTotalOperacion: montoTotalOperacion,
-        totalNoGravado: 0.0, // Adjust as needed
-        totalPagar: totalPagar,
-        totalLetras: convertirNumeroALetras(totalPagar), // Function to convert numbers to words
-        saldoFavor: 0.0, // Adjust as needed
-        condicionOperacion: 1, // Adjust as needed
-        pagos: null, // Adjust as needed
-        numPagoElectronico: null, // Adjust as needed
-    };
+        ];
+        resumen.montoTotalOperacion = totalGravada;
+        resumen.ivaPerci1 = 0.0; 
+        delete resumen.totalIva;
+    } else if (documentoSeleccionado === 'FE') {
+        resumen.totalIva = Math.round(totalIva * 100) / 100;
+    } else if (documentoSeleccionado === 'OtroTipo') {
+        // Agrega la lógica necesaria para otro tipo de DTE
+    }
+
+    return resumen;
 }
+
+
+
 
 function convertirNumeroALetras(num) {
     const unidades = ["", "UNO", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE"];

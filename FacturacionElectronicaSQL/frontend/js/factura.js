@@ -15,7 +15,7 @@ function cargarFactura(tipoDocumento) {
             version: 1,
             ambiente: "00",
             tipoDte: "01",
-            numeroControl: "DTE-01-0001ONEC-000000000005040",
+            numeroControl: "DTE-01-0001ONEC-000000000005080",
             codigoGeneracion: "48634903-FC58-45F9-9173-F9206D016489",
             tipoModelo: 1,
             tipoOperacion: 1,
@@ -272,199 +272,161 @@ function cargarFactura(tipoDocumento) {
 }
 
 
-function modificarFacturaElectronica(facturaJson) {
+function modificarFacturaElectronica(facturaJson, documentoSeleccionado) {
   // Generar el nuevo número de control y código de generación
- let tipoDte = facturaJson.dteJson.identificacion.tipoDte;
- facturaJson.dteJson.identificacion.numeroControl = generarNuevoNumeroControl(
-   facturaJson.dteJson.identificacion.numeroControl,
-   tipoDte
- );
- facturaJson.dteJson.identificacion.codigoGeneracion = generarUUID();
- facturaJson.dteJson.identificacion.fecEmi = new Date().toISOString().split("T")[0];
- facturaJson.dteJson.identificacion.horEmi = new Date().toLocaleTimeString("en-GB");
+  let tipoDte = facturaJson.dteJson.identificacion.tipoDte;
+  facturaJson.dteJson.identificacion.numeroControl = 
+    facturaJson.dteJson.identificacion.numeroControl
+    
 
- // Capturar y actualizar datos de Emisor
- const datosEmisor = capturarDatosEmisor();
- facturaJson.dteJson.emisor.nit = datosEmisor.nit;
- facturaJson.dteJson.emisor.nrc = datosEmisor.nrc;
- facturaJson.dteJson.emisor.nombre = datosEmisor.nombre;
- facturaJson.dteJson.emisor.codActividad = datosEmisor.codActividad;
- facturaJson.dteJson.emisor.descActividad = datosEmisor.descActividad;
+  facturaJson.dteJson.identificacion.codigoGeneracion = generarUUID();
+  facturaJson.dteJson.identificacion.fecEmi = new Date().toISOString().split("T")[0];
+  facturaJson.dteJson.identificacion.horEmi = new Date().toLocaleTimeString("en-GB");
 
- console.log(datosEmisor.codActividad);
- console.log(datosEmisor.descActividad);
+  // Capturar y actualizar datos de Emisor
+  const datosEmisor = capturarDatosEmisor();
+  facturaJson.dteJson.emisor.nit = datosEmisor.nit;
+  facturaJson.dteJson.emisor.nrc = datosEmisor.nrc;
+  facturaJson.dteJson.emisor.nombre = datosEmisor.nombre;
+  facturaJson.dteJson.emisor.codActividad = datosEmisor.codActividad;
+  facturaJson.dteJson.emisor.descActividad = datosEmisor.descActividad;
+  facturaJson.dteJson.emisor.nombreComercial = datosEmisor.nombreComercial;
+  facturaJson.dteJson.emisor.direccion.departamento = datosEmisor.departamento;
+  facturaJson.dteJson.emisor.direccion.municipio = datosEmisor.municipio;
+  facturaJson.dteJson.emisor.direccion.complemento = datosEmisor.complemento;
+  facturaJson.dteJson.emisor.telefono = datosEmisor.telefono;
+  facturaJson.dteJson.emisor.correo = datosEmisor.correo;
 
- facturaJson.dteJson.emisor.nombreComercial =
-   datosEmisor.nombreComercial;
- facturaJson.dteJson.emisor.direccion.departamento =
-   datosEmisor.departamento;
- facturaJson.dteJson.emisor.direccion.municipio = datosEmisor.municipio;
- facturaJson.dteJson.emisor.direccion.complemento =
-   datosEmisor.complemento;
- facturaJson.dteJson.emisor.telefono = datosEmisor.telefono;
- facturaJson.dteJson.emisor.correo = datosEmisor.correo;
+  // Capturar y actualizar datos de Receptor
+  const datosReceptor = capturarDatosReceptor();
+  facturaJson.dteJson.receptor.tipoDocumento = "36"; // Ajustar según necesidad
+  facturaJson.dteJson.receptor.numDocumento = datosReceptor.nit;
+  facturaJson.dteJson.receptor.nrc = datosReceptor.nrc;
+  facturaJson.dteJson.receptor.nombre = datosReceptor.nombre;
+  facturaJson.dteJson.receptor.codActividad = datosReceptor.codActividad;
+  facturaJson.dteJson.receptor.descActividad = datosReceptor.descActividad;
+  facturaJson.dteJson.receptor.direccion.departamento = datosReceptor.departamento;
+  facturaJson.dteJson.receptor.direccion.municipio = datosReceptor.municipio;
+  facturaJson.dteJson.receptor.direccion.complemento = datosReceptor.complemento;
+  facturaJson.dteJson.receptor.telefono = datosReceptor.telefono;
+  facturaJson.dteJson.receptor.correo = datosReceptor.correo;
 
- //facturaJson.dteJson.emisor.tipoEstablecimiento = datosEmisor.tipoEstablecimiento;
-
- // Capturar y actualizar datos de Receptor
- const datosReceptor = capturarDatosReceptor();
-facturaJson.dteJson.receptor.tipoDocumento = "36";
- facturaJson.dteJson.receptor.numDocumento = datosReceptor.nit;
- facturaJson.dteJson.receptor.nrc = datosReceptor.nrc;
- facturaJson.dteJson.receptor.nombre = datosReceptor.nombre;
- facturaJson.dteJson.receptor.codActividad = datosReceptor.codActividad;
- facturaJson.dteJson.receptor.descActividad =
-   datosReceptor.descActividad;
-
- facturaJson.dteJson.receptor.direccion.departamento =
-   datosReceptor.departamento;
- facturaJson.dteJson.receptor.direccion.municipio =
-   datosReceptor.municipio;
- facturaJson.dteJson.receptor.direccion.complemento =
-   datosReceptor.complemento;
- facturaJson.dteJson.receptor.telefono = datosReceptor.telefono;
- facturaJson.dteJson.receptor.correo = datosReceptor.correo;
-
- console.log(datosReceptor.codActividad); // Debería mostrar el código de giro del receptor
- console.log(datosReceptor.descActividad); // Debería mostrar el nombre de giro del receptor
-
- // Capturar y actualizar datos de Detalles
- const detalles = capturarDatosDetalles();
- facturaJson.dteJson.cuerpoDocumento = detalles;
-
- // Calcular el resumen y actualizar en el JSON
- const resumen = calcularResumen(detalles);
- facturaJson.dteJson.resumen = resumen;
-
-  return facturaJson;
-}
-
-function modificarComprobanteCreditoFiscal(facturaJson) {
- // Generar el nuevo número de control y código de generación
- let tipoDte = facturaJson.dteJson.identificacion.tipoDte;
- facturaJson.dteJson.identificacion.numeroControl = generarNuevoNumeroControl(
-   facturaJson.dteJson.identificacion.numeroControl,
-   tipoDte
- );
- facturaJson.dteJson.identificacion.codigoGeneracion = generarUUID();
- facturaJson.dteJson.identificacion.fecEmi = new Date().toISOString().split("T")[0];
- facturaJson.dteJson.identificacion.horEmi = new Date().toLocaleTimeString("en-GB");
-
- // Capturar y actualizar datos de Emisor
- const datosEmisor = capturarDatosEmisor();
- facturaJson.dteJson.emisor.nit = datosEmisor.nit;
- facturaJson.dteJson.emisor.nrc = datosEmisor.nrc;
- facturaJson.dteJson.emisor.nombre = datosEmisor.nombre;
- facturaJson.dteJson.emisor.codActividad = datosEmisor.codActividad;
- facturaJson.dteJson.emisor.descActividad = datosEmisor.descActividad;
-
- console.log(datosEmisor.codActividad);
- console.log(datosEmisor.descActividad);
-
- facturaJson.dteJson.emisor.nombreComercial =
-   datosEmisor.nombreComercial;
- facturaJson.dteJson.emisor.direccion.departamento =
-   datosEmisor.departamento;
- facturaJson.dteJson.emisor.direccion.municipio = datosEmisor.municipio;
- facturaJson.dteJson.emisor.direccion.complemento =
-   datosEmisor.complemento;
- facturaJson.dteJson.emisor.telefono = datosEmisor.telefono;
- facturaJson.dteJson.emisor.correo = datosEmisor.correo;
-
- //facturaJson.dteJson.emisor.tipoEstablecimiento = datosEmisor.tipoEstablecimiento;
-
- // Capturar y actualizar datos de Receptor
- const datosReceptor = capturarDatosReceptor();
- facturaJson.dteJson.receptor.nit = datosReceptor.nit;
- facturaJson.dteJson.receptor.nrc = datosReceptor.nrc;
- facturaJson.dteJson.receptor.nombre = datosReceptor.nombre;
- facturaJson.dteJson.receptor.codActividad = datosReceptor.codActividad;
- facturaJson.dteJson.receptor.descActividad =
-   datosReceptor.descActividad;
- facturaJson.dteJson.receptor.nombreComercial =
-   datosReceptor.nombreComercial;
- facturaJson.dteJson.receptor.direccion.departamento =
-   datosReceptor.departamento;
- facturaJson.dteJson.receptor.direccion.municipio =
-   datosReceptor.municipio;
- facturaJson.dteJson.receptor.direccion.complemento =
-   datosReceptor.complemento;
- facturaJson.dteJson.receptor.telefono = datosReceptor.telefono;
- facturaJson.dteJson.receptor.correo = datosReceptor.correo;
-
- console.log(datosReceptor.codActividad); // Debería mostrar el código de giro del receptor
- console.log(datosReceptor.descActividad); // Debería mostrar el nombre de giro del receptor
-
- // Capturar y actualizar datos de Detalles
- const detalles = capturarDatosDetalles();
- facturaJson.dteJson.cuerpoDocumento = detalles;
-
- // Calcular el resumen y actualizar en el JSON
- const resumen = calcularResumen(detalles);
- facturaJson.dteJson.resumen = resumen;
-
-  return facturaJson;
-}
+  // Capturar y actualizar datos de Detalles
+  const detalles = capturarDatosDetalles(documentoSeleccionado);
+  facturaJson.dteJson.cuerpoDocumento = detalles;
   
 
+  // Calcular el resumen y actualizar en el JSON
+  const resumen = calcularResumen(detalles, documentoSeleccionado);
+  facturaJson.dteJson.resumen = resumen;
+
+  return facturaJson;
+}
+
+function modificarComprobanteCreditoFiscal(facturaJson, documentoSeleccionado) {
+  // Generar el nuevo número de control y código de generación
+  let tipoDte = facturaJson.dteJson.identificacion.tipoDte;
+  facturaJson.dteJson.identificacion.numeroControl =
+    facturaJson.dteJson.identificacion.numeroControl
+   
+  facturaJson.dteJson.identificacion.codigoGeneracion = generarUUID();
+  facturaJson.dteJson.identificacion.fecEmi = new Date().toISOString().split("T")[0];
+  facturaJson.dteJson.identificacion.horEmi = new Date().toLocaleTimeString("en-GB");
+
+  // Capturar y actualizar datos de Emisor
+  const datosEmisor = capturarDatosEmisor();
+  facturaJson.dteJson.emisor.nit = datosEmisor.nit;
+  facturaJson.dteJson.emisor.nrc = datosEmisor.nrc;
+  facturaJson.dteJson.emisor.nombre = datosEmisor.nombre;
+  facturaJson.dteJson.emisor.codActividad = datosEmisor.codActividad;
+  facturaJson.dteJson.emisor.descActividad = datosEmisor.descActividad;
+  facturaJson.dteJson.emisor.nombreComercial = datosEmisor.nombreComercial;
+  facturaJson.dteJson.emisor.direccion.departamento = datosEmisor.departamento;
+  facturaJson.dteJson.emisor.direccion.municipio = datosEmisor.municipio;
+  facturaJson.dteJson.emisor.direccion.complemento = datosEmisor.complemento;
+  facturaJson.dteJson.emisor.telefono = datosEmisor.telefono;
+  facturaJson.dteJson.emisor.correo = datosEmisor.correo;
+
+  // Capturar y actualizar datos de Receptor
+  const datosReceptor = capturarDatosReceptor();
+  facturaJson.dteJson.receptor.nit = datosReceptor.nit;
+  facturaJson.dteJson.receptor.nrc = datosReceptor.nrc;
+  facturaJson.dteJson.receptor.nombre = datosReceptor.nombre;
+  facturaJson.dteJson.receptor.codActividad = datosReceptor.codActividad;
+  facturaJson.dteJson.receptor.descActividad = datosReceptor.descActividad;
+  facturaJson.dteJson.receptor.nombreComercial = datosReceptor.nombreComercial;
+  facturaJson.dteJson.receptor.direccion.departamento = datosReceptor.departamento;
+  facturaJson.dteJson.receptor.direccion.municipio = datosReceptor.municipio;
+  facturaJson.dteJson.receptor.direccion.complemento = datosReceptor.complemento;
+  facturaJson.dteJson.receptor.telefono = datosReceptor.telefono;
+  facturaJson.dteJson.receptor.correo = datosReceptor.correo;
+
+ 
+
+  return facturaJson;
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
+  let dataRecepcion = null; 
+  let facturaJson = null;
+  let documentoData = null;
+
   document
     .getElementById("submitDocumentButton")
     .addEventListener("click", async function () {
-      let dataRecepcion = null; 
-      let facturaJson = null;
-      let documentoData = null;
+     
 
       try {
+        // Obtener el tipo de documento seleccionado
+        let documentoSeleccionado = document.getElementById("documentType").value;
 
- // Generar y modificar el JSON de la factura
-        const documentoSeleccionado = document.getElementById("documentType").value;
+        // Generar y modificar el JSON de la factura
         facturaJson = cargarFactura(documentoSeleccionado);
 
-switch (documentoSeleccionado) {
+        // Ejecutar configuraciones específicas según el tipo de documento
+        switch (documentoSeleccionado) {
 
-  case "FE": // Factura Electrónica
+          case "FE": // Factura Electrónica
 
-    // Configuración específica para Factura Electrónica
-    facturaJson = modificarFacturaElectronica(facturaJson);
-    console.log(facturaJson);
-    break;
+            facturaJson = modificarFacturaElectronica(facturaJson);
+            console.log(facturaJson);
+            break;
 
-  case "CCF": // Comprobante de Crédito Fiscal
+          case "CCF": // Comprobante de Crédito Fiscal
 
-    // Configuración específica para Comprobante de Crédito Fiscal
-    facturaJson = modificarComprobanteCreditoFiscal(facturaJson);
+            facturaJson = modificarComprobanteCreditoFiscal(facturaJson);
+            
+            console.log(facturaJson);
 
-    break;
+            break;
 
-  // Agrega más casos según los diferentes tipos de DTE que manejes
-  default:
-    console.warn("Tipo de documento no soportado:", documentoSeleccionado);
-}
+          // Agrega más casos según los diferentes tipos de DTE que manejes
+          default:
 
+            console.warn("Tipo de documento no soportado:", documentoSeleccionado);
+        }
 
+        // Capturar y actualizar datos de Emisor, Receptor y Detalles
+        const datosEmisor = capturarDatosEmisor();
+        const datosReceptor = capturarDatosReceptor();
+        const detalles = capturarDatosDetalles(documentoSeleccionado);
+        facturaJson.dteJson.cuerpoDocumento= detalles;
 
-// Capturar y actualizar datos de Emisor
-const datosEmisor = capturarDatosEmisor();
-
- // Capturar y actualizar datos de Receptor
- const datosReceptor = capturarDatosReceptor();
-
- // Capturar y actualizar datos de Detalles
- const detalles = capturarDatosDetalles();
-
-  // Calcular el resumen y actualizar en el JSON
-  const resumen = calcularResumen(detalles);
+        // Calcular el resumen y actualizar en el JSON
+        const resumen = calcularResumen(detalles, documentoSeleccionado);
+        facturaJson.dteJson.resumen = resumen;
 
         try {
           // Intentar enviar la factura
           dataRecepcion = await enviarFactura(facturaJson, documentoSeleccionado);
         } catch (error) {
           console.error("Error al enviar la factura:", error);
+          return; // Detener el proceso si hay un error al enviar la factura
         }
 
         // Continuar el proceso y construir el objeto para guardar en la base de datos
-        const estado = dataRecepcion.estado || "INGRESADO";
+        const estado = dataRecepcion?.estado || "INGRESADO";
         const codigoGeneracion = facturaJson.dteJson.identificacion.codigoGeneracion;
 
         // Mapear el estado del documento
@@ -485,18 +447,18 @@ const datosEmisor = capturarDatosEmisor();
         }
 
         // Crear objeto con los datos del documento para enviar a la base de datos
-        documentoData = {
+       /* documentoData = {
           noDocumento: facturaJson.dteJson.identificacion.numeroControl,
           fechaDocumento: facturaJson.dteJson.identificacion.fecEmi,
           horaDocumento: facturaJson.dteJson.identificacion.horEmi,
           idEstadoDocumento,
           idCliente: datosReceptor.idCliente || 1,
-          totalVentasExentas: resumen.totalVentasExentas || 0,
-          totalVentasNoSujetas: resumen.totalVentasNoSujetas || 0,
-          totalVentasGravadas: resumen.totalVentasGravadas || 0,
-          ivaDocumento: resumen.ivaDocumento || 0,
-          retencionIVA: resumen.retencionIVA || 0,
-          totalDocumento: resumen.totalDocumento || 0,
+          totalVentasExentas: resumen.totalExenta || 0,
+          totalVentasNoSujetas: resumen.totalNoSuj || 0,
+          totalVentasGravadas: resumen.totalGravada || 0,
+          ivaDocumento: resumen.tributos[0]?.valor || 0,
+          retencionIVA: resumen.ivaRete1 || 0,
+          totalDocumento: resumen.totalPagar || 0,
           numeroControl: facturaJson.dteJson.identificacion.numeroControl,
           codigoGeneracion,
 
@@ -512,31 +474,31 @@ const datosEmisor = capturarDatosEmisor();
           idBodegaSucursal: datosEmisor.idBodegaSucursal || 1,
           idUsuario: datosEmisor.idUsuario || 1,
           subTotalVentas: resumen.subTotalVentas || 0,
-          descuentoNoSujetas: resumen.descuentoNoSujetas || 0,
-          descuentoExentas: resumen.descuentoExentas || 0,
-          descuentoGravadas: resumen.descuentoGravadas || 0,
+          descuentoNoSujetas: resumen.descuNoSuj || 0,
+          descuentoExentas: resumen.descuExenta || 0,
+          descuentoGravadas: resumen.descuGravada || 0,
           porcentajeDescuento: resumen.porcentajeDescuento || 0,
-          totalDescuentos: resumen.totalDescuentos || 0,
+          totalDescuentos: resumen.totalDescu || 0,
           subTotal: resumen.subTotal || 0,
-          ivaPercibido: resumen.ivaPercibido || 0,
-          retencionRenta: resumen.retencionRenta || 0,
+          ivaPercibido: resumen.ivaPerci1 || 0,
+          retencionRenta: resumen.reteRenta || 0,
           montoTotalOperacion: resumen.montoTotalOperacion || 0,
           totalNoGravado: resumen.totalNoGravado || 0,
           totalPagar: resumen.totalPagar || 0,
           totalLetras: resumen.totalLetras || "",
-          totalIva: resumen.totalIva || 0,
-          tipoDte:documentoSeleccionado
-        };
+          totalIva: resumen.tributos[0]?.valor || 0,
+          tipoDte: documentoSeleccionado
+        };*/
 
         // Intentar guardar el documento en la base de datos
-        await guardarDocumento(documentoData);
+       // await guardarDocumento(documentoData);
         
       } catch (error) {
         console.error("Error en el proceso de envío:", error);
-        alert("Error en el proceso de envío");
       }
     });
 });
+
 
 async function enviarFactura(facturaJson, documentoSeleccionado) {
   try {
@@ -600,7 +562,6 @@ async function enviarFactura(facturaJson, documentoSeleccionado) {
 async function guardarDocumento(documentoData) {
   try {
     // Imprimir la información que se va a enviar a la base de datos
-    console.log(facturaJson);
     console.log("Datos que se enviarán a la base de datos:", documentoData);
 
     // Enviar la solicitud para guardar el documento
@@ -627,26 +588,6 @@ async function guardarDocumento(documentoData) {
 
 //funciono de enviar detalles(cuerpo de documento) a la tabla `t_detalle_documento_facturacion` el cual toma cada detalle como un registro
 
-function generarNuevoNumeroControl(numeroControlActual, tipodte) {
-  // Extraer el número actual del formato
-  const partes = numeroControlActual.split("-");
-  let numero = parseInt(partes[3], 10);
-
-  // Incrementar el número en uno
-  numero += 1;
-
-  // Formatear el nuevo número de control
-  const nuevoNumeroControl = `DTE-${pad(tipodte, 2)}-0001ONEC-${pad(
-    numero.toString(),
-    15,
-    "0"
-  )}`;
-
-  // Imprimir el nuevo número de control generado
-  console.log("Nuevo número de control:", nuevoNumeroControl);
-
-  return nuevoNumeroControl;
-}
 
 // Función auxiliar para rellenar con ceros a la izquierda
 function pad(valor, longitud, caracter = "0") {

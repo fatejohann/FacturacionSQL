@@ -306,6 +306,8 @@ function navigate(direction) {
     }
 }
 
+
+
 async function loadDepartamentos(selectId) {
     try {
         const response = await fetch('../api/get_departamentos.php');
