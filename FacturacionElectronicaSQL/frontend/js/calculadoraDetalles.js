@@ -139,13 +139,13 @@ function updateCalculations() {
             <td>SUB TOTAL</td>
             <td></td>
             <td></td>
-            <td>${subTotal.toFixed(2)}</td>
+            <td>${totalGravada.toFixed(2)}</td>
         </tr>
         <tr>
             <td>VENTA TOTAL</td>
             <td></td>
             <td></td>
-            <td>${subTotal.toFixed(2)}</td>
+            <td>${(totalGravada + iva).toFixed(2)}</td>
         </tr>
     `;
 }
@@ -242,7 +242,7 @@ function calcularResumen(detalles, documentoSeleccionado) {
         totalDescu += detalle.montoDescu;
 
         if (documentoSeleccionado === 'CCF') {
-            valorIVA += detalle.ivaItem;
+            
             reteRenta += detalle.ventaGravada * 0.10;
         } else if (documentoSeleccionado === 'FE') {
             totalIva += detalle.ivaItem;
@@ -252,8 +252,11 @@ function calcularResumen(detalles, documentoSeleccionado) {
     subTotalVentas = totalNoSuj + totalExenta + totalGravada;
 
     const subTotal = Math.round((subTotalVentas - totalDescu) * 100) / 100;
-    const montoTotalOperacion = Math.round((subTotalVentas + valorIVA - totalDescu) * 100) / 100;
     const totalPagar = Math.round(totalGravada * 100) / 100;
+    const ivaCalculado = Math.round(totalPagar * 0.13 * 100) / 100;
+    const montoTotalOperacion = subTotal + ivaCalculado;
+    
+    
 
     let resumen = {
         totalNoSuj: Math.round(totalNoSuj * 100) / 100,
@@ -272,7 +275,7 @@ function calcularResumen(detalles, documentoSeleccionado) {
         montoTotalOperacion: montoTotalOperacion,
         totalNoGravado: 0.0,
         totalPagar: totalPagar,
-        totalLetras: convertirNumeroALetras(totalPagar),
+        totalLetras: convertirNumeroALetras(montoTotalOperacion),
         saldoFavor: 0.0,
         condicionOperacion: 1,
         pagos: null,
@@ -281,7 +284,8 @@ function calcularResumen(detalles, documentoSeleccionado) {
     };
 
     if (documentoSeleccionado === 'CCF') {
-        const ivaCalculado = Math.round(montoTotalOperacion * 0.13 * 100) / 100;
+        console.log(ivaCalculado);
+
         resumen.tributos = [
             {
                 codigo: "20",
@@ -289,7 +293,7 @@ function calcularResumen(detalles, documentoSeleccionado) {
                 valor: ivaCalculado,
             }
         ];
-        resumen.montoTotalOperacion = totalGravada;
+        resumen.montoTotalOperacion = montoTotalOperacion;
         resumen.ivaPerci1 = 0.0; 
         delete resumen.totalIva;
     } else if (documentoSeleccionado === 'FE') {
@@ -300,8 +304,6 @@ function calcularResumen(detalles, documentoSeleccionado) {
 
     return resumen;
 }
-
-
 
 
 function convertirNumeroALetras(num) {
@@ -380,13 +382,24 @@ document.getElementById('save-json').addEventListener('click', () => {
     const documentoSeleccionado = document.getElementById("documentType").value;
         let facturaJson = cargarFactura(documentoSeleccionado);
     // Capturar y actualizar datos de Detalles
- const detalles = capturarDatosDetalles();
+ const detalles = capturarDatosDetalles(documentoSeleccionado);
  facturaJson.dteJson.cuerpoDocumento = detalles;
 
  // Calcular el resumen y actualizar en el JSON
- const resumen = calcularResumen(detalles);
+ const resumen = calcularResumen(detalles, documentoSeleccionado);
  facturaJson.dteJson.resumen = resumen;
+
+ for (var i = 0; i <detalles.length; i++) {
+
+    console.log(detalles[i]);       
+    console.log(detalles[i].precioUni); 
+
+    //guardarDetalleDocumento(detalles[i]);
+
+  }
     
 
     console.log(facturaJson);
+    
+
 });

@@ -15,7 +15,7 @@ function cargarFactura(tipoDocumento) {
             version: 1,
             ambiente: "00",
             tipoDte: "01",
-            numeroControl: "DTE-01-0001ONEC-000000000005080",
+            numeroControl: "DTE-01-0001ONEC-000000000005090",
             codigoGeneracion: "48634903-FC58-45F9-9173-F9206D016489",
             tipoModelo: 1,
             tipoOperacion: 1,
@@ -171,7 +171,7 @@ function cargarFactura(tipoDocumento) {
             version: 3,
             ambiente: "00",
             tipoDte: "03",
-            numeroControl: "DTE-03-0001ONEC-000000000005068",
+            numeroControl: "DTE-03-0001ONEC-000000000005070",
             codigoGeneracion: "D7A32E8C-06C0-41A2-9E2F-A094C994AFDE",
             tipoModelo: 1,
             tipoOperacion: 1,
@@ -447,7 +447,52 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Crear objeto con los datos del documento para enviar a la base de datos
-       /* documentoData = {
+       if (documentoSeleccionado=="CCF") {
+        documentoData = {
+           noDocumento: facturaJson.dteJson.identificacion.numeroControl,
+           fechaDocumento: facturaJson.dteJson.identificacion.fecEmi,
+           horaDocumento: facturaJson.dteJson.identificacion.horEmi,
+           idEstadoDocumento,
+           idCliente: datosReceptor.idCliente || 1,
+           totalVentasExentas: resumen.totalExenta || 0,
+           totalVentasNoSujetas: resumen.totalNoSuj || 0,
+           totalVentasGravadas: resumen.totalGravada || 0,
+           ivaDocumento: resumen.tributos[0]?.valor || 0,
+           retencionIVA: resumen.ivaRete1 || 0,
+           totalDocumento: resumen.totalPagar || 0,
+           numeroControl: facturaJson.dteJson.identificacion.numeroControl,
+           codigoGeneracion,
+ 
+           clasificacionMsg: dataRecepcion?.clasificaMsg || "",
+           codigoMsg: dataRecepcion?.codigoMsg || "",
+           descripcionMsg: dataRecepcion?.descripcionMsg || "",
+ 
+           idArchivoJson: null,
+           idArchivoPDF: null,
+           idTipoPago: datosReceptor.idTipoPago || 1,
+           idPlazoPago: datosReceptor.idPlazoPago || 1,
+           idLote: null,
+           idBodegaSucursal: datosEmisor.idBodegaSucursal || 1,
+           idUsuario: datosEmisor.idUsuario || 1,
+           subTotalVentas: resumen.subTotalVentas || 0,
+           descuentoNoSujetas: resumen.descuNoSuj || 0,
+           descuentoExentas: resumen.descuExenta || 0,
+           descuentoGravadas: resumen.descuGravada || 0,
+           porcentajeDescuento: resumen.porcentajeDescuento || 0,
+           totalDescuentos: resumen.totalDescu || 0,
+           subTotal: resumen.subTotal || 0,
+           ivaPercibido: resumen.ivaPerci1 || 0,
+           retencionRenta: resumen.reteRenta || 0,
+           montoTotalOperacion: resumen.montoTotalOperacion || 0,
+           totalNoGravado: resumen.totalNoGravado || 0,
+           totalPagar: resumen.totalPagar || 0,
+           totalLetras: resumen.totalLetras || "",
+           totalIva: resumen.tributos[0]?.valor || 0,
+           tipoDte: documentoSeleccionado
+         };
+       }
+       else if(documentoSeleccionado== "FE"){
+        documentoData = {
           noDocumento: facturaJson.dteJson.identificacion.numeroControl,
           fechaDocumento: facturaJson.dteJson.identificacion.fecEmi,
           horaDocumento: facturaJson.dteJson.identificacion.horEmi,
@@ -456,7 +501,7 @@ document.addEventListener("DOMContentLoaded", function () {
           totalVentasExentas: resumen.totalExenta || 0,
           totalVentasNoSujetas: resumen.totalNoSuj || 0,
           totalVentasGravadas: resumen.totalGravada || 0,
-          ivaDocumento: resumen.tributos[0]?.valor || 0,
+          ivaDocumento: resumen.totalIva || 0,
           retencionIVA: resumen.ivaRete1 || 0,
           totalDocumento: resumen.totalPagar || 0,
           numeroControl: facturaJson.dteJson.identificacion.numeroControl,
@@ -486,12 +531,43 @@ document.addEventListener("DOMContentLoaded", function () {
           totalNoGravado: resumen.totalNoGravado || 0,
           totalPagar: resumen.totalPagar || 0,
           totalLetras: resumen.totalLetras || "",
-          totalIva: resumen.tributos[0]?.valor || 0,
+          totalIva: resumen.totalIva || 0,
           tipoDte: documentoSeleccionado
-        };*/
+        };
+       }
 
         // Intentar guardar el documento en la base de datos
-       // await guardarDocumento(documentoData);
+      await guardarDocumento(documentoData);
+
+     
+         // Obtener el ID del último documento
+         const ultimoIdDocumento = await obtenerUltimoIdDocumento();
+  
+         // Añadir idDocumentoFacturacion a cada detalle
+         console.log(detalles);
+
+         detalles.forEach((detalle, index) => {
+             detalle.idDocumentoFacturacion = ultimoIdDocumento;
+             detalle.noLinea = index + 1; // Asignar número de línea
+
+         });
+  
+         for (var i = 0; i <detalles.length; i++) {
+          console.log(detalles[i]); 
+          
+          guardarDetalleDocumento(detalles[i]);
+        }
+
+         /*for (let detalle of detalles) {
+          console.log("Enviando detalle:", detalle); // Log del detalle que se está enviando
+          try {
+              const response = await guardarDetalleDocumento(detalle);
+              console.log("Respuesta del servidor:", response);
+          } catch (error) {
+              console.error("Error al enviar detalle:", detalle, error.message);
+              throw error; // Propaga el error para detener la operación si ocurre
+          }
+      }*/
         
       } catch (error) {
         console.error("Error en el proceso de envío:", error);
@@ -586,7 +662,50 @@ async function guardarDocumento(documentoData) {
   }
 }
 
+async function obtenerUltimoIdDocumento() {
+  try {
+      const response = await fetch('../api/get_id_ultimo_documento.php');
+      const data = await response.json();
+      if (data.id) {
+          return data.id;
+      } else {
+          console.error("No se encontró el último ID.");
+          return null;
+      }
+  } catch (error) {
+      console.error("Error al obtener el último ID:", error);
+      return null;
+  }
+}
+
 //funciono de enviar detalles(cuerpo de documento) a la tabla `t_detalle_documento_facturacion` el cual toma cada detalle como un registro
+async function guardarDetalleDocumento(detalle) {
+  //console.log("Enviando detalle:", detalle); // Log para revisar los datos enviados
+  try {
+      const response = await fetch('../api/save_detalle_documento.php', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(detalle)
+      });
+
+      if (!response.ok) {
+          throw new Error(`Error al guardar el detalle. Status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.error) {
+          throw new Error(`Error del servidor: ${data.error}`);
+      }
+      
+      return data;
+  } catch (error) {
+      console.error("Error en guardarDetalleDocumento:", error.message);
+      throw error;
+  }
+}
 
 
 // Función auxiliar para rellenar con ceros a la izquierda
